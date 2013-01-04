@@ -6,6 +6,7 @@ description: Decodes TI83 calculator programs to text
 """
 import binascii
 from copy import deepcopy
+import dictionaries
 
 
 def init():    
@@ -36,8 +37,7 @@ def getName():
         except:
             print("File could not be found.")
     # Code below is for rapid debugging, should be commented
-    #return "GUESS.8Xp"
-    #return "PONG5.8Xp"
+    #return "FIBO.8Xp"
     
 def readFile(filename):
     """
@@ -121,45 +121,7 @@ def parseASCII(fileContents):
     
     # A dictionary mapping each TI83 uppercase character code with its
     # ASCII equivalent
-    ascii_dict = dict([
-    (b'A', 'A'),
-    (b'B', 'B'),
-    (b'C', 'C'),
-    (b'D', 'D'),
-    (b'E', 'E'),
-    (b'F', 'F'),
-    (b'G', 'G'),
-    (b'H', 'H'),
-    (b'I', 'I'),
-    (b'J', 'J'),
-    (b'K', 'K'),
-    (b'L', 'L'),
-    (b'M', 'M'),
-    (b'N', 'N'),
-    (b'O', 'O'),
-    (b'P', 'P'),
-    (b'Q', 'Q'),
-    (b'R', 'R'),
-    (b'S', 'S'),
-    (b'T', 'T'),
-    (b'U', 'U'),
-    (b'V', 'V'),
-    (b'W', 'W'),
-    (b'X', 'X'),
-    (b'Y', 'Y'),
-    (b'Z', 'Z'),
-    (b'*', '"'),
-    (b'0', '0'),
-    (b'1', '1'),
-    (b'2', '2'),
-    (b'3', '3'),
-    (b'4', '4'),
-    (b'5', '5'),
-    (b'6', '6'),
-    (b'7', '7'),
-    (b'8', '8'),
-    (b'9', '9')
-    ])
+    ascii_dict = dictionaries.standardASCII()
     
     # Call translate with the uppercase dictionary, the file contents
     # and no escape code set.
@@ -167,34 +129,7 @@ def parseASCII(fileContents):
       
     # A dictionary mapping each TI83 lowercase letter code to its
     # ascii lowercase equivalent
-    ascii_lower_dict = dict([
-    (b'\xb0', 'a'),
-    (b'\xb1', 'b'),
-    (b'\xb2', 'c'),
-    (b'\xb3', 'd'),
-    (b'\xb4', 'e'),
-    (b'\xb5', 'f'),
-    (b'\xb6', 'g'),
-    (b'\xb7', 'h'),
-    (b'\xb8', 'i'),
-    (b'\xb9', 'j'),
-    (b'\xba', 'k'),
-    (b'\xbc', 'l'),
-    (b'\xbd', 'm'),
-    (b'\xbe', 'n'),
-    (b'\xbf', 'o'),
-    (b'\xc0', 'p'),
-    (b'\xc1', 'q'),
-    (b'\xc2', 'r'),
-    (b'\xc3', 's'),
-    (b'\xc4', 't'),
-    (b'\xc5', 'u'),
-    (b'\xc6', 'v'),
-    (b'\xc7', 'w'),
-    (b'\xc8', 'x'),
-    (b'\xc9', 'y'),
-    (b'\xca', 'z')
-    ])
+    ascii_lower_dict = dictionaries.lowercaseASCII()
     
     # Call translate with the lowercase dictionary, the file contents,
     # and the escape character b'\xbb' set
@@ -204,27 +139,7 @@ def parseASCII(fileContents):
     # MUST be called AFTER the lowercase letters are replaced because
     # some lowercase letters have the same hex value and need to be
     # interpreted with their escape characters first                
-    ascii_symbol_dict = dict([
-    (b'>', ':'),
-    (b'\x83', '/'),
-    (b'q', '-'),
-    (b'j', '='),
-    (b'+', ','),
-    (b'\x10', '('),
-    (b'\x11', ')'),
-    (b'k', '<'),
-    (b'l', '>'),
-    (b'o', '!='),
-    (b'p', '+'),
-    (b':', '.'),
-    (b'n', '>='),
-    (b'm', '<='),
-    (b'\xb0', '{-}'),
-    (b'\n', '('),
-    (b'\x06', '['),
-    (b'\xaf', '?'),
-    (b'\xf0', '^')
-    ])
+    ascii_symbol_dict = dictionaries.symbolsASCII()
     
     # Call translate with the ascii symbol dictionary, the file contents,
     # and no escape character set
@@ -242,10 +157,7 @@ def parseWhitespace(fileContents):
         a list of byte values with the whitespace codes replaced with
         their ascii equivalents
     """
-    whitespace_dict = dict([
-    (b'?', '\n:'),
-    (b')', ' ')
-    ])
+    whitespace_dict = dictionaries.whitespace()
             
     return translate(whitespace_dict, fileContents, False, '')
 
@@ -261,24 +173,7 @@ def parseFunction(fileContents):
     """
     
     # Dictionary mapping function hex codes to their plaintext values
-    function_dict = dict([
-    (b'\xde', 'Disp '),
-    (b'\xdd', 'Prompt '),
-    (b'\xce', 'If '),
-    (b'\x04', ' -> '),
-    (b'\xbb', 'randInt'),
-    (b'\xd6', 'Lbl '),
-    (b'\xe0', 'Output('),
-    (b'\xd9', 'Stop'),
-    (b'\xe1', 'ClrHome'),
-    (b'\xd1', 'While '),
-    (b'@', ' and '),
-    (b'<', ' or '),
-    (b'\xd4', 'End'),
-    (b'\xad', 'getKey'),
-    (b'r', 'Ans'),
-    (b'\xd7', 'Goto ')
-    ])
+    function_dict = dictionaries.tibasicFunctions()
 
     # calls the translate function with the function dictionary,
     # contents of the file, and no escape character set
