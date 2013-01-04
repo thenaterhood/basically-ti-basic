@@ -96,7 +96,7 @@ def translate(dictionary, content, escapeCharExists, escapeChar):
         # character with its value from the dictionary
         if (escapeCharExists and item in dictionary):
             translation.append(dictionary[item])
-            translation.insert(-2, escapeChar)
+            translation.insert(-1, escapeChar)
                     
         elif (item not in dictionary):
             translation.append(item)
@@ -184,7 +184,7 @@ def parseWhitespace(fileContents):
         if (fileContents[i][0] == ":"):
             parsedFile.append(b'?')
             parsedFile.append(fileContents[i][1:])
-            
+                        
         if (fileContents[i][0] != ":"):
             parsedFile.append(fileContents[i])
     
@@ -233,6 +233,27 @@ def splitBytes(contents):
     
     
     return splitBytes
+    
+def getSize(size):
+    """
+    Determines the size value to use for the compile TI-Basic header
+    
+    Arguments:
+        size (int): the size in bytes of the data
+    Returns:
+        sizebytes (list): the size value and it's following byte
+    """
+    headerSize = []
+    if (size < 128):
+        sizebyte = chr(size).encode('ascii', 'strict')
+        headerSize.append(sizebyte)
+        headerSize.append(b'\x00')
+    if (size >= 128):
+        # Raise an error, since the compiler doesn't know how to 
+        # work with larger programs currently
+        raise ValueError("File is too large for the compiler to handle: " +str(size) +" bytes")
+        
+    return headerSize
     
 def createHeader(content, name):
     header = []
@@ -285,14 +306,17 @@ def createHeader(content, name):
     # 1 since in comparison with known files, there always seems to be 1
     # byte short.
     
-    size = chr(len(content)+1)
-    header.append(size.encode('ascii', 'ignore'))
+    size = (len(content)+1)
+    
+    header = header + getSize(size)
     
     # Add the null character that comes after the size.  This is not
     # always a null character, but for now treating it as such to 
     # see if it works.  Will most likely work for smaller programs but
-    # might be a problem for larger ones
-    header.append(b'\x00')
+    # might be a problem for larger ones.  Previous line now
+    # also adds this byte.  Worth noting: if there is an extra null
+    # character at this point, the program is interpreted as a boxplot
+    #header.append(b'\x00')
     
     # Adds the character that denotes the start of the name
     header.append(b'\x05')
@@ -315,24 +339,25 @@ def createHeader(content, name):
     header.append(b'\x00')
     
     # Adding the size a second time as it is repeated after the name
-    header.append(size.encode('ascii', 'ignore'))
+    header = header + getSize(size)
     
     # Adding the extra hex character that comes after this.  Using null
     # which should work fine for small programs, but might be a problem
-    # for bigger ones once again
-    header.append(b'\x00')
+    # for bigger ones once again.  Previous line includes this now.
+    #header.append(b'\x00')
     
     # Adding the next value, which appears to be the number of bytes in the
     # file excluding the header -2.  Consistent between different
     # program sizes
-    header.append(chr(int(ascii(len(content)-2))).encode('ascii', 'ignore'))
+    header = header + getSize(size-2)
     
     # Adding the final hex value to the header.  Using null once again
     # which is probably fine for smaller programs but might cause problems
     # with larger ones.  WORTH NOTING:  for larger programs, all the
-    # hex values that we're unsure of here appear to be the same.    
+    # hex values that we're unsure of here appear to be the same. Previous
+    # line includes this now.   
 
-    header.append(b'\x00')
+    #header.append(b'\x00')
     
     return header
     

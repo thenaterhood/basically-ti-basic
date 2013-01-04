@@ -45,7 +45,6 @@ def standardASCII():
     (b'X', 'X'),
     (b'Y', 'Y'),
     (b'Z', 'Z'),
-    (b'*', '"'),
     (b'0', '0'),
     (b'1', '1'),
     (b'2', '2'),
@@ -132,7 +131,9 @@ def symbolsASCII():
     (b'\n', '('),
     (b'\x06', '['),
     (b'\xaf', '?'),
-    (b'\xf0', '^')
+    (b'\xf0', '^'),
+    (b'*', '"')
+
     ])
     
     return dictionary
