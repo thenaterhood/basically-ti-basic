@@ -244,15 +244,15 @@ def getSize(size):
         sizebytes (list): the size value and it's following byte
     """
     headerSize = []
-    if (size < 128):
-        sizebyte = chr(size).encode('ascii', 'strict')
+    if (size < 256):
+        sizebyte = bytes(chr(size), 'latin')
         headerSize.append(sizebyte)
         headerSize.append(b'\x00')
-    if (size >= 128):
+    if (size >= 256):
         # Raise an error, since the compiler doesn't know how to 
         # work with larger programs currently
         raise ValueError("File is too large for the compiler to handle: " +str(size) +" bytes")
-        
+    print(headerSize)
     return headerSize
     
 def createHeader(content, name):
@@ -414,6 +414,8 @@ def saveFile(contents, save, filename):
         for item in contents:
             if (not isinstance(item, str)):
                 file.write(item)
+            if (isinstance(item, str)):
+                print("Error writing byte to file.  Was string ("+item+").  Continuing, but compiled file might have problems.")
         print("Saved file as " + filename)
             
 
