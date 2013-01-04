@@ -303,10 +303,10 @@ def createHeader(content, name):
     # Next is the size of the file in bytes, so we take the contents
     # of the parsed file and just check the length since each byte is
     # an entry in the list.  That gets added to the header.  Adding
-    # 1 since in comparison with known files, there always seems to be 1
-    # byte short.
+    # 3 since in comparison with known files, there always seems to be 3
+    # bytes short, possibly because the file has no footer.
     
-    size = (len(content)+1)
+    size = (len(content)+3)
     
     header = header + getSize(size)
     
