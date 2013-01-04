@@ -3,10 +3,11 @@ file: dictionaries.py
 language: python3
 author: Nate Levesque <public@thenaterhood.com>
 description: Contains functions that return the dictionaries
-    required to decompile and compile TI-Basic
+    required to decompile and compile TI-Basic.  Intended to be imported
+    by another program.
     
 TODO:
-    add functionality to return the reversed dictionary for compiling
+    Finish the dictionary defining TI-Basic functions
 """
 def reverseDictionary(dictionary):
     """

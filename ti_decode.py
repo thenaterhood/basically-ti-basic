@@ -2,7 +2,13 @@
 file: ti_decode.py
 language: python3
 author: Nate Levesque <public@thenaterhood.com>
-description: Decodes TI83 calculator programs to text
+description: Decompiles TI83 calculator programs to plaintext and saves
+    the decompiled data.
+    
+TODO:
+    add ability to parse lists called in the code
+    
+    add validity checking for TI-Basic files
 """
 import binascii
 from copy import deepcopy

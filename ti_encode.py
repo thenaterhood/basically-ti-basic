@@ -2,7 +2,18 @@
 file: ti_encode.py
 language: python3
 author: Nate Levesque <public@thenaterhood.com>
-description: Decodes TI83 calculator programs to text
+description: Compiles plaintext to TI-Basic files and saves the file.
+
+TODO:
+    complete overhaul of how the file is read so that comments and
+    text stop being a problem.
+    
+    Syntax checking.  Dream big, right?  Few basics would be nice, shouln't
+    be too hard
+    
+    Find a better way to encode hex values into bytes so the program
+    size isn't limited
+    
 """
 import binascii
 from copy import deepcopy
@@ -82,7 +93,7 @@ def translate(dictionary, content, escapeCharExists, escapeChar):
     # Make a copy of the input so the original isn't modified
     #translation = deepcopy(content)
     translation = []
-    i = 0
+
     # Iterate through each index of the copy of the content
     for item in content:
         # If there is no escape character set, check if the item
@@ -90,10 +101,10 @@ def translate(dictionary, content, escapeCharExists, escapeChar):
         if ( not escapeCharExists) and (item in dictionary):
             translation.append(dictionary[item])
                 
-        # If an escape character is set, the iteration has found it, and
-        # the item at the index after it is in the dictionary, replace
-        # the escape character with an emptyString and replace the next
-        # character with its value from the dictionary
+        # If an escape character is set and the character at the current
+        # iteration was found in the dictionary, switch out the item for
+        # its compiled byte value and insert the escape character into
+        # the preceding index.
         if (escapeCharExists and item in dictionary):
             translation.append(dictionary[item])
             translation.insert(-1, escapeChar)
