@@ -7,8 +7,10 @@ and recompiling the .8Xp files from the TI-83/TI-84 calculators.
 Contents
 ------------
 
-    ti_decode.py    a decompiler for TI-Basic files
+    ti_decode.py    a decompiler for TI-Basic files (TI-Basic -> text)
     ti_encode.py    a compiler for TI-Basic files (text -> TI-Basic)
+    dictionaries.py the dictionaries required to compile and decompile
+    FIBO.8Xp        a compiled test program.  Calculates the Fibonacci sequence.
     
 ti_decode.py
 ------------
