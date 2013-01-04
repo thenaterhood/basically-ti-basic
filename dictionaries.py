@@ -8,12 +8,31 @@ description: Contains functions that return the dictionaries
 TODO:
     add functionality to return the reversed dictionary for compiling
 """
-def standardASCII():
+def reverseDictionary(dictionary):
+    """
+    Reverses a dictionary so that the keys become the values.  Mainly
+    so that the existing dictionaries for decompiling the TI-Basic files
+    can be used here as well.
+    
+    Arguments:
+        dictionary (dict): a dictionary to flip
+    Returns:
+        flipped (dict): a dictionary with the key/value pairs reversed
+    """
+    flipped = dict()
+    for key in dictionary:
+        flipped[dictionary[key].strip()] = key
+     
+    return flipped
+    
+
+def standardASCII(flip):
     """
     Maps binary ascii values to plaintext.
     
     Arguments:
-        none
+        flip (boolean): whether to reverse the key/value pairs before
+            returning the dictionary
     Returns:
         dictionary (dict): A dictionary mapping binary ascii codes to
             plaintext
@@ -57,16 +76,20 @@ def standardASCII():
     (b'9', '9')
     ])
     
-    return dictionary
-    
-def lowercaseASCII():
+    if (flip):
+        return reverseDictionary(dictionary)
+    else:
+        return dictionary
+        
+def lowercaseASCII(flip):
     """
     Maps TI-Basic binary values for lowercase letters to plaintext.  Does
     not include the escape characters that TI-Basic files use to denote
     lowercase letters in the compiled files.
     
     Arguments:
-        none
+        flip (boolean): whether to reverse the key/value pairs before
+            returning the dictionary
     Returns:
         dictionary (dict): a dictionary mapping TI-Basic binary values
             for lowercase letters to plaintext
@@ -100,14 +123,18 @@ def lowercaseASCII():
     (b'\xca', 'z')
     ])
     
-    return dictionary
+    if (flip):
+        return reverseDictionary(dictionary)
+    else:
+        return dictionary
     
-def symbolsASCII():
+def symbolsASCII(flip):
     """
     Maps TI-Basic binary codes for ascii symbols and operators to plaintext
     
     Arguments:
-        none
+        flip (boolean): whether to reverse the key/value pairs before
+            returning the dictionary
     Returns:
         dictionary (dict): a dictionary mapping the TI-Basic values to
             plaintext.
@@ -136,15 +163,19 @@ def symbolsASCII():
 
     ])
     
-    return dictionary
+    if (flip):
+        return reverseDictionary(dictionary)
+    else:
+        return dictionary
     
-def whitespace():
+def whitespace(flip):
     """
     Returns a dictionary mapping TI-Basic binary codes for whitespace
     to their plaintext equivalent.  Works with spaces and newlines.
     
     Arguments:
-        none
+        flip (boolean): whether to reverse the key/value pairs before
+            returning the dictionary
     Returns:
         dictionary (dict): a dictionary mapping TI-Basic whitespace to 
             plaintext
@@ -154,15 +185,19 @@ def whitespace():
     (b')', ' ')
     ])
     
-    return dictionary
+    if (flip):
+        return reverseDictionary(dictionary)
+    else:
+        return dictionary
     
-def tibasicFunctions():
+def tibasicFunctions(flip):
     """
     Returns a dictionary mapping TI-Basic tokens for functions to their
     plaintext equivalents.
     
     Arguments:
-        none
+        flip (boolean): whether to reverse the key/value pairs before
+            returning the dictionary
     Returns:
         dictionary (dict): a dictionary mapping the TI-Basic compiled
             tokens to their plaintext values.
@@ -189,4 +224,7 @@ def tibasicFunctions():
     (b'\xd7', 'Goto ')
     ])
     
-    return dictionary
+    if (flip):
+        return reverseDictionary(dictionary)
+    else:
+        return dictionary

@@ -121,7 +121,7 @@ def parseASCII(fileContents):
     
     # A dictionary mapping each TI83 uppercase character code with its
     # ASCII equivalent
-    ascii_dict = dictionaries.standardASCII()
+    ascii_dict = dictionaries.standardASCII(False)
     
     # Call translate with the uppercase dictionary, the file contents
     # and no escape code set.
@@ -129,7 +129,7 @@ def parseASCII(fileContents):
       
     # A dictionary mapping each TI83 lowercase letter code to its
     # ascii lowercase equivalent
-    ascii_lower_dict = dictionaries.lowercaseASCII()
+    ascii_lower_dict = dictionaries.lowercaseASCII(False)
     
     # Call translate with the lowercase dictionary, the file contents,
     # and the escape character b'\xbb' set
@@ -139,7 +139,7 @@ def parseASCII(fileContents):
     # MUST be called AFTER the lowercase letters are replaced because
     # some lowercase letters have the same hex value and need to be
     # interpreted with their escape characters first                
-    ascii_symbol_dict = dictionaries.symbolsASCII()
+    ascii_symbol_dict = dictionaries.symbolsASCII(False)
     
     # Call translate with the ascii symbol dictionary, the file contents,
     # and no escape character set
@@ -157,7 +157,7 @@ def parseWhitespace(fileContents):
         a list of byte values with the whitespace codes replaced with
         their ascii equivalents
     """
-    whitespace_dict = dictionaries.whitespace()
+    whitespace_dict = dictionaries.whitespace(False)
             
     return translate(whitespace_dict, fileContents, False, '')
 
@@ -173,7 +173,7 @@ def parseFunction(fileContents):
     """
     
     # Dictionary mapping function hex codes to their plaintext values
-    function_dict = dictionaries.tibasicFunctions()
+    function_dict = dictionaries.tibasicFunctions(False)
 
     # calls the translate function with the function dictionary,
     # contents of the file, and no escape character set

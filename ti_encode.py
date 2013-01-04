@@ -102,23 +102,6 @@ def translate(dictionary, content, escapeCharExists, escapeChar):
             translation.append(item)
                 
     return translation
-    
-def reverseDictionary(dictionary):
-    """
-    Reverses a dictionary so that the keys become the values.  Mainly
-    so that the existing dictionaries for decompiling the TI-Basic files
-    can be used here as well.
-    
-    Arguments:
-        dictionary (dict): a dictionary to flip
-    Returns:
-        flipped (dict): a dictionary with the key/value pairs reversed
-    """
-    flipped = dict()
-    for key in dictionary:
-        flipped[dictionary[key].strip()] = key
-     
-    return flipped
 
 def parseASCII(fileContents):
     """
@@ -138,8 +121,7 @@ def parseASCII(fileContents):
     # Grab the dictionary with values for ascii uppercase and numbers
     # and reverse the key/value pairs since the dictionary is written
     # for decompiling
-    ascii_dict = dictionaries.standardASCII()
-    ascii_dict = reverseDictionary(ascii_dict)
+    ascii_dict = dictionaries.standardASCII(True)
     
     # Call translate with the uppercase dictionary, the file contents
     # and no escape code set.
@@ -148,9 +130,7 @@ def parseASCII(fileContents):
     # Grab the dictionary with values for the lowercase letters
     # and reverse the key/value pairs since the dictionary is written
     # for decompiling
-    ascii_lower_dict = dictionaries.lowercaseASCII()
-    ascii_lower_dict = reverseDictionary(ascii_lower_dict)
-    
+    ascii_lower_dict = dictionaries.lowercaseASCII(True)    
     
     # Call translate with the lowercase dictionary, the file contents,
     # and the escape character b'\xbb' set
@@ -158,8 +138,7 @@ def parseASCII(fileContents):
     
     # Grab the dictionary mapping symbols to their plaintext values and
     # reverse the key/values since the dictionary is written for decompiling.    
-    ascii_symbol_dict = dictionaries.symbolsASCII()
-    ascii_symbol_dict = reverseDictionary(ascii_symbol_dict)
+    ascii_symbol_dict = dictionaries.symbolsASCII(True)
     
     # Call translate with the ascii symbol dictionary, the file contents,
     # and no escape character set
@@ -177,7 +156,7 @@ def parseWhitespace(fileContents):
         a list of byte values with the whitespace codes replaced with
         their ascii equivalents
     """
-    whitespace_dict = dictionaries.whitespace()
+    whitespace_dict = dictionaries.whitespace(True)
     
     parsedFile = []
     for i in range(0, len(fileContents)):
@@ -188,7 +167,6 @@ def parseWhitespace(fileContents):
         if (fileContents[i][0] != ":"):
             parsedFile.append(fileContents[i])
     
-    #whitespace_dict = reverseDictionary(whitespace_dict)
     #return translate(whitespace_dict, fileContents, False, '')
     return parsedFile
 
@@ -206,8 +184,7 @@ def parseFunction(fileContents):
     # Grab the dictionary mapping function hex codes to their plaintext 
     # values and reverse the key/values since the dictionary is written
     # for decompiling.
-    function_dict = dictionaries.tibasicFunctions()
-    function_dict = reverseDictionary(function_dict)
+    function_dict = dictionaries.tibasicFunctions(True)
 
     # calls the translate function with the function dictionary,
     # contents of the file, and no escape character set
@@ -252,7 +229,7 @@ def getSize(size):
         # Raise an error, since the compiler doesn't know how to 
         # work with larger programs currently
         raise ValueError("File is too large for the compiler to handle: " +str(size) +" bytes")
-    print(headerSize)
+
     return headerSize
     
 def createHeader(content, name):
