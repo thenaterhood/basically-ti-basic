@@ -9,7 +9,15 @@ TODO:
     add functionality to return the reversed dictionary for compiling
 """
 def standardASCII():
+    """
+    Maps binary ascii values to plaintext.
     
+    Arguments:
+        none
+    Returns:
+        dictionary (dict): A dictionary mapping binary ascii codes to
+            plaintext
+    """
     dictionary = dict([
     (b'A', 'A'),
     (b'B', 'B'),
@@ -53,6 +61,17 @@ def standardASCII():
     return dictionary
     
 def lowercaseASCII():
+    """
+    Maps TI-Basic binary values for lowercase letters to plaintext.  Does
+    not include the escape characters that TI-Basic files use to denote
+    lowercase letters in the compiled files.
+    
+    Arguments:
+        none
+    Returns:
+        dictionary (dict): a dictionary mapping TI-Basic binary values
+            for lowercase letters to plaintext
+    """
     dictionary = dict([
     (b'\xb0', 'a'),
     (b'\xb1', 'b'),
@@ -85,6 +104,15 @@ def lowercaseASCII():
     return dictionary
     
 def symbolsASCII():
+    """
+    Maps TI-Basic binary codes for ascii symbols and operators to plaintext
+    
+    Arguments:
+        none
+    Returns:
+        dictionary (dict): a dictionary mapping the TI-Basic values to
+            plaintext.
+    """
     dictionary = dict([
     (b'>', ':'),
     (b'\x83', '/'),
@@ -110,6 +138,16 @@ def symbolsASCII():
     return dictionary
     
 def whitespace():
+    """
+    Returns a dictionary mapping TI-Basic binary codes for whitespace
+    to their plaintext equivalent.  Works with spaces and newlines.
+    
+    Arguments:
+        none
+    Returns:
+        dictionary (dict): a dictionary mapping TI-Basic whitespace to 
+            plaintext
+    """
     dictionary = dict([
     (b'?', '\n:'),
     (b')', ' ')
@@ -118,6 +156,19 @@ def whitespace():
     return dictionary
     
 def tibasicFunctions():
+    """
+    Returns a dictionary mapping TI-Basic tokens for functions to their
+    plaintext equivalents.
+    
+    Arguments:
+        none
+    Returns:
+        dictionary (dict): a dictionary mapping the TI-Basic compiled
+            tokens to their plaintext values.
+            
+    TODO:
+        Add the remainder of TI-Basic functions to the dictionary
+    """
     dictionary = dict([
     (b'\xde', 'Disp '),
     (b'\xdd', 'Prompt '),
