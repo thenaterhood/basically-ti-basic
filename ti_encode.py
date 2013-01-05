@@ -233,13 +233,21 @@ def getSize(size):
     """
     headerSize = []
     if (size < 256):
-        sizebyte = bytes(chr(size), 'latin')
+        sizebyte = bytes([size])
         headerSize.append(sizebyte)
         headerSize.append(b'\x00')
-    if (size >= 256):
+    if (size >= 255):
+        carrybyte = bytes([size//255])
+        sizebyte = bytes([ size - (255 * (size // 255)) ])
+        headerSize.append(sizebyte)
+        headerSize.append(carrybyte)
+        
+        #sizebyte = bytes([size-255])
+        #headerSize.append(sizebyte)
+        #headerSize.append(b'\x01')
         # Raise an error, since the compiler doesn't know how to 
         # work with larger programs currently
-        raise ValueError("File is too large for the compiler to handle: " +str(size) +" bytes")
+        #raise ValueError("File is too large for the compiler to handle: " +str(size) +" bytes")
 
     return headerSize
     
