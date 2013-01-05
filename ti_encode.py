@@ -39,7 +39,7 @@ def getName():
         
     # Implements a catchblock and tests if the file exists
     while True:
-        filename = input("Enter the name of the file to decode, including the .8Xp extension: ")
+        filename = input("Enter the name of the file to compile, including the .8Xp extension: ")
 
         try:
             file = open(filename, 'r')
@@ -231,23 +231,30 @@ def getSize(size):
     Returns:
         sizebytes (list): the size value and it's following byte
     """
+    # The absolute largest possible size that the TI-Basic file is
+    # allowed to be, based on current knowledge of the metadata.
+    absoluteLimit = 255*255
+    
     headerSize = []
     if (size < 256):
         sizebyte = bytes([size])
         headerSize.append(sizebyte)
         headerSize.append(b'\x00')
-    if (size >= 255):
+    if (size >= 255 and size < absoluteLimit):
         carrybyte = bytes([size//255])
         sizebyte = bytes([ size - (255 * (size // 255)) ])
         headerSize.append(sizebyte)
         headerSize.append(carrybyte)
         
-        #sizebyte = bytes([size-255])
-        #headerSize.append(sizebyte)
-        #headerSize.append(b'\x01')
-        # Raise an error, since the compiler doesn't know how to 
-        # work with larger programs currently
-        #raise ValueError("File is too large for the compiler to handle: " +str(size) +" bytes")
+    # If the program is beyond the size that the file will allow,
+    # an error needs to be raised because the file metadata doesn't
+    # seem to make it possible for it to be larger.  Current limit
+    # appears to be 255*255 providing I can math tonight.
+    
+    if (size >= absoluteLimit):
+        # Raise an error, since the file size can't be beyond the
+        # size defined in the absoluteLimit variable
+        raise ValueError("File is beyond the allowed size for compiled TI-Basic files: yours: " +str(size) +", limit:" +str(absoluteLimit))
 
     return headerSize
     
@@ -256,6 +263,7 @@ def createHeader(content, name):
     # Appends the TI83 filetype header to the header file, followed
     # by its newline.  In ascii, header is **TI83F*[SUB][NEWLINE]
     filetype=[b'*',b'*',b'T',b'I',b'8',b'3',b'F',b'*',b'\x1a',b'\n']
+    
     for item in filetype:
         header.append(item)
     
@@ -337,23 +345,10 @@ def createHeader(content, name):
     # Adding the size a second time as it is repeated after the name
     header = header + getSize(size)
     
-    # Adding the extra hex character that comes after this.  Using null
-    # which should work fine for small programs, but might be a problem
-    # for bigger ones once again.  Previous line includes this now.
-    #header.append(b'\x00')
-    
     # Adding the next value, which appears to be the number of bytes in the
     # file excluding the header -2.  Consistent between different
     # program sizes
     header = header + getSize(size-2)
-    
-    # Adding the final hex value to the header.  Using null once again
-    # which is probably fine for smaller programs but might cause problems
-    # with larger ones.  WORTH NOTING:  for larger programs, all the
-    # hex values that we're unsure of here appear to be the same. Previous
-    # line includes this now.   
-
-    #header.append(b'\x00')
     
     return header
     
