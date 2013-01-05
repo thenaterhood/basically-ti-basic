@@ -183,8 +183,7 @@ def whitespace(flip):
     """
     dictionary = dict([
     (b'?', '\n:'),
-    (b')', ' '),
-    (b'?', '\n')
+    (b')', ' ')
     ])
     
     if (flip):

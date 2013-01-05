@@ -163,10 +163,7 @@ def parseWhitespace(fileContents):
         a list of byte values with the whitespace codes replaced with
         their ascii equivalents
     """
-    whitespace_dict = dict([
-    (b'?', '\n:'),
-    (b')', ' '),
-    ])
+    whitespace_dict = dictionaries.whitespace(False)
             
     return translate(whitespace_dict, fileContents, False, '')
 

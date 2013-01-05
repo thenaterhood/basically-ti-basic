@@ -49,23 +49,6 @@ def getName():
             print("File could not be found.")
     # Code below is for rapid debugging, should be commented
     #return "FIBO2.txt"
- 
-def readFileII(filename):
-    """
-    Reads a file into an array line by line, using the newlines to 
-    divide the lines and stripping : from the beginning of each line
-    
-    Arguments:
-        filename (string): the name of the file to open
-    Returns:
-        fileContents (list): contents of the file
-    """
-    fileContents = []
-    for line in open(filename, 'r'):
-        fileContents.append(b'?')
-        fileContents.append(line[1:])
-     
-    return fileContents
     
 def readFile(filename):
     """
@@ -184,19 +167,16 @@ def parseWhitespace(fileContents):
         a list of byte values with the whitespace codes replaced with
         their ascii equivalents
     """
+    
     parsedFile = []
-
     for i in range(0, len(fileContents)):
-        if (fileContents[i] == ":"):
+        if (fileContents[i][0] == ":"):
             parsedFile.append(b'?')
             parsedFile.append(fileContents[i][1:])
-            
-        if (fileContents[i] == ' '):
-            parsedFile.append(b')')
                         
-        else:
+        if (fileContents[i][0] != ":"):
             parsedFile.append(fileContents[i])
-            
+    
     # Commented, because doing this doesn't actually hold any benefit
     # with how the file is currently dealt with
     
@@ -382,33 +362,34 @@ def createHeader(content, name):
     
     return header
     
-def chop(bigList, delimeter, chop):
+def trim(bigList, top, indexes):
     """
-    Trim a character from the front of list items or break each
-    list item at a character
+    Trim a number of items from the front or back (top or bottom, here)
+    of a list
     
     Arguments:
-        bigList (list): the list to trim items from
-        chop (boolean): whether to trim the character from the front
-            of the item or break the item at the character
-        delimeter (str): the character to search for
+        fileContents (list): the list to trim items from
+        top (boolean): whether to trim from the top/front of the list
+            (True) or from the bottom/back (False)
+        indexes (int): the number of items to trim from the list
     """
     
     # Deepcopy the original so it doesn't get modified
-    chopped = deepcopy(bigList)
+    trimmed = deepcopy(bigList)
     # trim items from the top if top is set and add a colon at the new
     # front of the list
-    if (chop):
-        for item in chopped:
-            chopped = chopped + item.split(delimeter)
+    if (top):
+        trimmed = trimmed[indexes:]
+        trimmed.insert(0, ':')
         
     # trim items from the bottom if top is not set
-    if (not chop):
+    if (not top):
         i = 0
-        while i < len(chopped):
-            chopped[i] = chopped[i][1:]
+        while i < indexes:
+            trimmed.pop()
+            i+=1
     
-    return chopped
+    return trimmed
     
 def saveFile(contents, save, filename):
     """
@@ -433,60 +414,13 @@ def saveFile(contents, save, filename):
         # Opens the file for writing and saves the content into it
         file = open(filename, "wb")
         for item in contents:
-            if (isinstance(item, bytes)):
+            if (not isinstance(item, str)):
                 file.write(item)
-            if (not isinstance(item, bytes)):
-                print("Error writing byte to file.  Was '"+str(item)+"'.  Continuing, but compiled file might have problems.")
+            if (isinstance(item, str)):
+                print("Error writing byte to file.  Was string '"+item+"'.  Continuing, but compiled file might have problems.")
         print("Saved file as " + filename)
-
-def parseText(content):
-    """
-    Byte-compile the comments and text
-    
-    Arguments:
-        content (list): a line of uncompiled TI-Basic
-    Returns:
-        textParsed (list): a line of TI-Basic with comments byte-compiled
-    """
-    parsedComments = []
-    
-    # Parse the code comments
-    if (content[0] == '"'):
-        return parseASCII(content)
-    else:
-        return content
-
-    
-def juryRigging(fileContents):
-    """
-    A compatibility layer between the old way of doing this
-    and the new, overhaul-in-progress way of doing it.
-    
-    Arguments:
-        fileContents (list): a list of lines from the TI-Basic text
-    Returns:
-        rigged (list): a list of words from the TI-Basic text
-    """
-    rigged = []
-    
-    for item in fileContents:
-        rigged = rigged + item.strip().split()
             
-    return rigged
 
-
-def parseFile(fileContent):
-    parsedFile = []
-    
-    for line in fileContent:
-        preParsed = parseText(line)
-        parsed = parseWhitespace(preParsed)
-
-        parsed = parseFunction(parsed)
-        parsed = parseASCII(parsed)
-        parsedFile.append(parsed)
-    
-    return parsedFile
 def main():
     """
     Calls the functions in order to decode the .8Xp file.  Order
@@ -503,34 +437,21 @@ def main():
     filename = getName()
     
     # Read the file
-    fileContents = readFileII(filename)
-    #print(fileContents)
-    #preParsed = parseText(fileContents)
-    #preParsed = parseWhitespace(preParsed)
-            
-    #fileContents = juryRigging(preParsed)
-    
+    fileContents = readFile(filename)
     # Parse the file.  Again, order matters here
-    parsedFile = parseFile(fileContents)
-    
-    compiledData = []
-    for item in parsedFile:
-        #compiledData.append(b'?')
-        compiledData = compiledData + item
-        
-    print(compiledData)
-    #parsedFile = parseFunction(parsedFile)
-    #parsedFile = splitBytes(parsedFile)
-    #parsedFile = parseASCII(parsedFile)
+    parsedFile = parseWhitespace(fileContents)
+    parsedFile = parseFunction(parsedFile)
+    parsedFile = splitBytes(parsedFile)
+    parsedFile = parseASCII(parsedFile)
     
     # Break the name of the program off the filename
     name = (filename.split('.')[0])
 
     # Create the file header/metadata
-    header = createHeader(compiledData, name)
+    header = createHeader(parsedFile, name)
      
     # Concatonate the metadata to the front of the list
-    parsedFile = (header + compiledData)
+    parsedFile = (header + parsedFile)
 
     #save = input("\n Would you like to save this output?  y/n: ")
     # Saving by default, since printing compiled data to the console
