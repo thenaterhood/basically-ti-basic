@@ -67,16 +67,17 @@ looks something like:
 The next and final line is a little more interesting and much more crucial to the file actually being usable.
 It starts with a NUL character, followed by the size of the code (excluding the size of the metadata and footer).
 If this value is invalid it causes some bigger problems, as the decompiler used to confirm results will stop
-interpreting anything past the number of bytes the file claims to be.  This is followed by a byte that appears
-to match the one ending the preceding line.  The next section of the line is the name of the program, starting
+interpreting anything past the number of bytes the file claims to be.  This is followed by a byte that functions
+as a carry bit.  Since the maximum value a single byte can hold is 255, if the size of the program is over 255 bytes
+then the next byte is set.  The next section of the line is the name of the program, starting
 with a [ENQ] character.  The name is limited to 8 bytes, and therein capital letters.  Any unused bytes are filled
 with [NUL] characters.  The two bytes after this are [NUL] characters as well which might suggest that the file
 itself could permit longer names although the 8 characters is all that fits on the calculator screen's place
-for it.  This is followed by the size again and a matching byte, like the second two characters of the line.
-After this is what appears to be the size - 2, and a matching byte to what precedes the size-2.  So, put together
+for it.  This is followed by the size again and a carry byte, like the second two characters of the line.
+After this is what appears to be the size - 2, and a carry byte for the size-2.  So, put together
 the line ends up looking like this:
 
-    [NUL]program size[STX/NUL][ENQ]prgmname[NUL][NUL]program size[STX/NUL]prgm size - 2[STX/NUL]
+    [NUL]program size, carry byte[ENQ]prgmname[NUL][NUL]program size, carry byte, prgm size - 2, carry byte
     
 Then the compiled code for the program follows
 
