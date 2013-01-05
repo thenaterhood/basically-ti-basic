@@ -11,8 +11,8 @@ TODO:
     Syntax checking.  Dream big, right?  Few basics would be nice, shouln't
     be too hard
     
-    Find a better way to encode hex values into bytes so the program
-    size isn't limited
+    validation to make sure the file put in is actually a text file.  Doesn't
+    break things if it isn't but it looks nasty
     
 """
 import binascii
@@ -52,7 +52,7 @@ def getName():
     
 def readFile(filename):
     """
-    Reads a file into an array as byte values
+    Reads a file into an array as chunks separated by spaces.
     
     Arguments:
         filename (string): the name of the file to open
@@ -167,7 +167,6 @@ def parseWhitespace(fileContents):
         a list of byte values with the whitespace codes replaced with
         their ascii equivalents
     """
-    whitespace_dict = dictionaries.whitespace(True)
     
     parsedFile = []
     for i in range(0, len(fileContents)):
@@ -178,6 +177,10 @@ def parseWhitespace(fileContents):
         if (fileContents[i][0] != ":"):
             parsedFile.append(fileContents[i])
     
+    # Commented, because doing this doesn't actually hold any benefit
+    # with how the file is currently dealt with
+    
+    #whitespace_dict = dictionaries.whitespace(True)
     #return translate(whitespace_dict, fileContents, False, '')
     return parsedFile
 
@@ -203,7 +206,8 @@ def parseFunction(fileContents):
 
 def splitBytes(contents):
     """
-    Splits a list of items up into bytes.
+    Splits a list of items up into byte-sized chunks.  They'd probably
+    taste nice on salad.
     
     Arguments:
         contents (list): a list of strings
@@ -229,17 +233,19 @@ def getSize(size):
     Arguments:
         size (int): the size in bytes of the data
     Returns:
-        sizebytes (list): the size value and it's following byte
+        sizebytes (list): the size value and its following byte
     """
     # The absolute largest possible size that the TI-Basic file is
     # allowed to be, based on current knowledge of the metadata.
     absoluteLimit = 255*255
     
     headerSize = []
-    if (size < 256):
+    
+    if (size <= 255):
         sizebyte = bytes([size])
         headerSize.append(sizebyte)
         headerSize.append(b'\x00')
+    
     if (size >= 255 and size < absoluteLimit):
         carrybyte = bytes([size//255])
         sizebyte = bytes([ size - (255 * (size // 255)) ])
@@ -328,8 +334,12 @@ def createHeader(content, name):
     # Add the name of the file, which is limited to 8 characters and 
     # followed by 2 NULL characters.
     
+    # Create the series of bytes that holds the name.  Splits the name
+    # that's known into bytes and adds 9 null bytes after it to make sure
+    # it is the right length.  Then takes the first 9 bytes of the resulting
     nameAppend = []
-    name = name[0:9]
+    name = name[0:9] 
+       
     for char in name:
         nameAppend.append(char.encode('ascii', 'strict'))
     
@@ -392,21 +402,22 @@ def saveFile(contents, save, filename):
     Returns:
         nothing
     """
-    # Adds a txt extension to the filename
+    # Adds a .8Xp extension to the filename
     filename = (filename.split('.')[0] + ".8Xp")
     
-    # Determins whether or not to save the file
-    if (save == 'n'):
-        print("Okay, done without saving")
-        pass
-    if (save == 'y'):
+    # Determines whether or not to save the file
+    #if (save == 'n'):
+    #    print("Okay, done without saving")
+    #    pass
+    #if (save == 'y'):
+    if True:
         # Opens the file for writing and saves the content into it
         file = open(filename, "wb")
         for item in contents:
             if (not isinstance(item, str)):
                 file.write(item)
             if (isinstance(item, str)):
-                print("Error writing byte to file.  Was string ("+item+").  Continuing, but compiled file might have problems.")
+                print("Error writing byte to file.  Was string '"+item+"'.  Continuing, but compiled file might have problems.")
         print("Saved file as " + filename)
             
 
@@ -441,17 +452,12 @@ def main():
      
     # Concatonate the metadata to the front of the list
     parsedFile = (header + parsedFile)
-    
-    # Create a string representation of the parsed file that can be
-    # printed to the console
-    #string = ""
-    #for item in parsedFile:
-    #    string += str(item)
-    #print(string)
 
-    save = input("\n Would you like to save this output?  y/n: ")
+    #save = input("\n Would you like to save this output?  y/n: ")
+    # Saving by default, since printing compiled data to the console
+    # isn't terribly useful.
     # Call saveFile to determine whether to save the output and save it
-    saveFile(parsedFile, save, filename)
+    saveFile(parsedFile, 'y', filename)
     
 
 # Call the main method
