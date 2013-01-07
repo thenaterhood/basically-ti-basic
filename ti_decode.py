@@ -212,7 +212,12 @@ def main():
     # Read the file
     tiData = ti_file.readFile(filename)
     
-    fileContents = tiData.prgmdata
+    # A basic check to make sure the file contains program data,
+    # raises an error if not
+    if (tiData.prgmdata != 'null'):
+        fileContents = tiData.prgmdata
+    else:
+        raise RuntimeError("The file requested does not contain program data")
     
     # Parse the file.  Again, order matters here
     parsedFile = parseASCII(fileContents)

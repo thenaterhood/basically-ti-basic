@@ -261,7 +261,7 @@ def getSize(size):
     if (size >= absoluteLimit):
         # Raise an error, since the file size can't be beyond the
         # size defined in the absoluteLimit variable
-        raise ValueError("File is beyond the allowed size for compiled TI-Basic files: yours: " +str(size) +", limit:" +str(absoluteLimit))
+        raise RuntimeError("File is beyond the allowed size for compiled TI-Basic files: yours: " +str(size) +", limit:" +str(absoluteLimit))
 
     return headerSize
     

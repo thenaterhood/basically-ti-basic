@@ -64,7 +64,7 @@ def readFile(filename):
     try:
         fileData.metadata = fileContents[:73]
     except:
-        raise ValueError("File is too short to be a .8xp file.")
+        raise RuntimeError("File is too short to be a .8xp file.")
     
     # raises a warning if the array is too short to contain program 
     # data and a footer    
@@ -113,6 +113,8 @@ def writeFile(filename, tiData):
         if (not isinstance(byte, bytes)):
             print("Error writing byte to file.  Was string '"+byte+"'.  Continuing, but compiled file might have problems.")
     
+    # Writes the footer to the file (can be an emptylist, file
+    # does not seem to rely on footer)
     for byte in tiData.footer:
         if (isinstance(byte, bytes)):
             outFile.write(byte)
