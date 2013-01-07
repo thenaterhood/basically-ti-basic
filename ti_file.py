@@ -126,5 +126,28 @@ def writeFile(filename, tiData):
     # write the whole thing or fail, makes it easier to debug the encode
     # function if a big problem pops up        
     return True
+    
+def validate(tiData):
+    """
+    Validates that a .8Xp file is actually a .8Xp file.
+    Currently only checks sections of the metadata.  For now
+    is primarily so the decode program doesn't try decoding things
+    that are not TI-Basic files.
+    
+    Arguments:
+        tiData (tiFile): a tiFile object containing the ti-basic file
+            to validate
+            
+    Returns:
+        valid (boolean): a boolean value indicating if the file is valid
+    """    
+    fileType = tiData.metadata[:7]
+    print(fileType)
+    if (fileType != [b'*', b'T', b'I', b'8', b'3', b'F', b'*']):
+        return False
+    
+    return True
+
+
 
 
