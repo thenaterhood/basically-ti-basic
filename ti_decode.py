@@ -220,7 +220,7 @@ def main():
     if (tiData.prgmdata != 'null'):
         fileContents = tiData.prgmdata
     else:
-        raise RuntimeError("The file requested does not contain program data")
+        raise RuntimeError("FATAL: The file requested does not contain program data")
         
     
     # Parse the file.  Again, order matters here

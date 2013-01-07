@@ -142,7 +142,7 @@ def validate(tiData):
         valid (boolean): a boolean value indicating if the file is valid
     """    
     fileType = tiData.metadata[:7]
-    print(fileType)
+
     if (fileType != [b'*', b'T', b'I', b'8', b'3', b'F', b'*']):
         return False
     
