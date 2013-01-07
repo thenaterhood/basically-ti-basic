@@ -362,65 +362,6 @@ def createHeader(content, name):
     header = header + getSize(size-2)
     
     return header
-    
-def trim(bigList, top, indexes):
-    """
-    Trim a number of items from the front or back (top or bottom, here)
-    of a list
-    
-    Arguments:
-        fileContents (list): the list to trim items from
-        top (boolean): whether to trim from the top/front of the list
-            (True) or from the bottom/back (False)
-        indexes (int): the number of items to trim from the list
-    """
-    
-    # Deepcopy the original so it doesn't get modified
-    trimmed = deepcopy(bigList)
-    # trim items from the top if top is set and add a colon at the new
-    # front of the list
-    if (top):
-        trimmed = trimmed[indexes:]
-        trimmed.insert(0, ':')
-        
-    # trim items from the bottom if top is not set
-    if (not top):
-        i = 0
-        while i < indexes:
-            trimmed.pop()
-            i+=1
-    
-    return trimmed
-    
-def saveFile(contents, save, filename):
-    """
-    Saves a file to disk
-    
-    Arguments:
-        contents (list): a list of lines to store into the file
-        save (string): a y or an n of whether or not to create the file
-        filename (string): the filename to save the file into
-    Returns:
-        nothing
-    """
-    # Adds a .8Xp extension to the filename
-    filename = (filename.split('.')[0] + ".8Xp")
-    
-    # Determines whether or not to save the file
-    #if (save == 'n'):
-    #    print("Okay, done without saving")
-    #    pass
-    #if (save == 'y'):
-    if True:
-        # Opens the file for writing and saves the content into it
-        file = open(filename, "wb")
-        for item in contents:
-            if (not isinstance(item, str)):
-                file.write(item)
-            if (isinstance(item, str)):
-                print("Error writing byte to file.  Was string '"+item+"'.  Continuing, but compiled file might have problems.")
-        print("Saved file as " + filename)
-            
 
 def main():
     """
