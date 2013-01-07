@@ -13,6 +13,7 @@ TODO:
 import binascii
 from copy import deepcopy
 import dictionaries
+import ti_file
 
 
 def init():    
@@ -44,29 +45,7 @@ def getName():
             print("File could not be found.")
     # Code below is for rapid debugging, should be commented
     #return "FIBO.8Xp"
-    
-def readFile(filename):
-    """
-    Reads a file into an array as byte values
-    
-    Arguments:
-        filename (string): the name of the file to open
-    Returns:
-        fileContents (list): byte values from the file
-        
-    """
-    fileContents = []
-    
-    # Open the file as hex and read it one byte at a time into the
-    # list fileContents
-    with open(filename, "rb") as f:
-        byte = f.read(1)
-        while byte:
-            byte = f.read(1)
-            fileContents.append(byte)
-    return fileContents
 
-    
 def translate(dictionary, content, escapeCharExists, escapeChar):
     """
     Takes a dictionary and a list of items (such as bytes in a file)
@@ -185,35 +164,6 @@ def parseFunction(fileContents):
     # contents of the file, and no escape character set
     return translate(function_dict, fileContents, False, '')
     
-def trim(bigList, top, indexes):
-    """
-    Trim a number of items from the front or back (top or bottom, here)
-    of a list
-    
-    Arguments:
-        fileContents (list): the list to trim items from
-        top (boolean): whether to trim from the top/front of the list
-            (True) or from the bottom/back (False)
-        indexes (int): the number of items to trim from the list
-    """
-    
-    # Deepcopy the original so it doesn't get modified
-    trimmed = deepcopy(bigList)
-    # trim items from the top if top is set and add a colon at the new
-    # front of the list
-    if (top):
-        trimmed = trimmed[indexes:]
-        trimmed.insert(0, ':')
-        
-    # trim items from the bottom if top is not set
-    if (not top):
-        i = 0
-        while i < indexes:
-            trimmed.pop()
-            i+=1
-    
-    return trimmed
-    
 def saveFile(contents, save, filename):
     """
     Saves a file to disk
@@ -257,16 +207,14 @@ def main():
     filename = getName()
     
     # Read the file
-    fileContents = readFile(filename)
+    tiData = ti_file.readFile(filename)
+    
+    fileContents = tiData.prgmdata
     
     # Parse the file.  Again, order matters here
     parsedFile = parseASCII(fileContents)
     parsedFile = parseWhitespace(parsedFile)
     parsedFile = parseFunction(parsedFile)
-    
-    # Cut off the extraneous garbage bytes from the top and bottom.
-    parsedFile = trim(parsedFile, True, 73)
-    parsedFile = trim(parsedFile, False, 3)
     
     # Create a string representation of the parsed file that can be
     # printed to the console

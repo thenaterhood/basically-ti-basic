@@ -18,6 +18,7 @@ TODO:
 import binascii
 from copy import deepcopy
 import dictionaries
+import ti_file
 
 
 def init():    
@@ -449,15 +450,17 @@ def main():
 
     # Create the file header/metadata
     header = createHeader(parsedFile, name)
-     
-    # Concatonate the metadata to the front of the list
-    parsedFile = (header + parsedFile)
-
+    
+    tiData = ti_file.tiFile()
+    
+    tiData.metadata = header
+    tiData.prgmdata = parsedFile
+    
     #save = input("\n Would you like to save this output?  y/n: ")
     # Saving by default, since printing compiled data to the console
     # isn't terribly useful.
     # Call saveFile to determine whether to save the output and save it
-    saveFile(parsedFile, 'y', filename)
+    ti_file.writeFile(name, tiData)
     
 
 # Call the main method
