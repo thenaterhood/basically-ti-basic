@@ -396,6 +396,7 @@ def main():
     
     tiData.metadata = header
     tiData.prgmdata = parsedFile
+    tiData.footer = [b'\x00', b'\x00', b'\x00']
     
     #save = input("\n Would you like to save this output?  y/n: ")
     # Saving by default, since printing compiled data to the console

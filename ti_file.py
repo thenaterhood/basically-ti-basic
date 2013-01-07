@@ -75,8 +75,8 @@ def readFile(filename):
         return fileData
         
     else:
-        fileData.prgmdata = fileContents[73:len(fileContents)-3]
-        fileData.footer = fileContents[len(fileContents)-3:len(fileContents)]
+        fileData.prgmdata = fileContents[73:len(fileContents)-4]
+        fileData.footer = fileContents[len(fileContents)-4:len(fileContents)]
         
     return fileData
     
@@ -112,9 +112,12 @@ def writeFile(filename, tiData):
             outFile.write(byte)
         if (not isinstance(byte, bytes)):
             print("Error writing byte to file.  Was string '"+byte+"'.  Continuing, but compiled file might have problems.")
-            
-    # Doesn't write a footer to the file because the encode function
-    # doesn't currently generate one.
+    
+    for byte in tiData.footer:
+        if (isinstance(byte, bytes)):
+            outFile.write(byte)
+        if (not isinstance(byte, bytes)):
+            print("Error writing byte to file.  Was string '"+byte+"'.  Continuing, but compiled file might have problems.")
     
     # Returns true for now, will later possibly perform some check to
     # make sure it wrote what it intended.  For now needs to just

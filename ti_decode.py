@@ -81,11 +81,14 @@ def translate(dictionary, content, escapeCharExists, escapeChar):
         # the item at the index after it is in the dictionary, replace
         # the escape character with an emptyString and replace the next
         # character with its value from the dictionary
-        if (escapeCharExists and 
-        translation[i] == escapeChar and 
-        translation[i+1] in dictionary):
-            translation[i] = ""
-            translation[i+1] = dictionary[translation[i+1]]
+        try:
+            if (escapeCharExists and 
+            translation[i] == escapeChar and 
+            translation[i+1] in dictionary):
+                translation[i] = ""
+                translation[i+1] = dictionary[translation[i+1]]
+        except:
+            pass 
                 
     return translation
 
@@ -181,7 +184,7 @@ def saveFile(contents, save, filename):
     # Determins whether or not to save the file
     if (save == 'n'):
         print("Okay, done without saving")
-        pass
+            
     if (save == 'y'):
         # Opens the file for writing and saves the content into it
         with open(filename, "w") as output:
