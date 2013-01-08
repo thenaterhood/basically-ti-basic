@@ -8,6 +8,7 @@ description: Reads and writes TI-Basic .8Xp files and returns
 TODO:
     
 """
+import dictionaries
 
 class tiFile():
     """
@@ -141,9 +142,12 @@ def validate(tiData):
     Returns:
         valid (boolean): a boolean value indicating if the file is valid
     """    
-    fileType = tiData.metadata[:7]
+    fileType = tiData.metadata[:9]
+    # Validating against bytes 1-9 of the mimetype.
+    # for some reason the first byte of the file doesn't get read
+    # which will need to be looked into
 
-    if (fileType != [b'*', b'T', b'I', b'8', b'3', b'F', b'*']):
+    if (fileType != dictionaries.mimetype()[1:]):
         return False
     
     return True

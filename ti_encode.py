@@ -269,7 +269,7 @@ def createHeader(content, name):
     header = []
     # Appends the TI83 filetype header to the header file, followed
     # by its newline.  In ascii, header is **TI83F*[SUB][NEWLINE]
-    filetype=[b'*',b'*',b'T',b'I',b'8',b'3',b'F',b'*',b'\x1a',b'\n']
+    filetype = dictionaries.mimetype()
     
     for item in filetype:
         header.append(item)
