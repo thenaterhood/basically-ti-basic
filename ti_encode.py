@@ -290,10 +290,10 @@ def createHeader(content, name):
     # Next is the size of the file in bytes, so we take the contents
     # of the parsed file and just check the length since each byte is
     # an entry in the list.  That gets added to the header.  Adding
-    # 3 since in comparison with known files, there always seems to be 3
+    # 2 since in comparison with known files, there always seems to be 2
     # bytes short, possibly because the file has no footer.
     
-    size = (len(content)+3)
+    size = (len(content)+2)
     
     header = header + getSize(size)
     
@@ -320,7 +320,7 @@ def createHeader(content, name):
     for char in name:
         nameAppend.append(char.encode('ascii', 'strict'))
     
-    while len(nameAppend) < 9:
+    while len(nameAppend) < 8:
         nameAppend.append(b'\x00')
         
     for char in nameAppend:
@@ -353,31 +353,24 @@ def main():
     
     # Request a filename from the user
     filename = common.getFName()
+    tiData = tiFile.tiFile()
     
     # Read the file
     fileContents = readFile(filename)
     # Parse the file.  Again, order matters here
-    parsedFile = parseWhitespace(fileContents)
-    parsedFile = parseFunction(parsedFile)
-    parsedFile = splitBytes(parsedFile)
-    parsedFile = parseASCII(parsedFile)
+    tiData.prgmdata = parseWhitespace(fileContents)
+    tiData.prgmdata = parseFunction(tiData.prgmdata)
+    tiData.prgmdata = splitBytes(tiData.prgmdata)
+    tiData.prgmdata = parseASCII(tiData.prgmdata)
     
     # Break the name of the program off the filename
     name = (filename.split('.')[0])
-
-    # Create the file header/metadata
-    header = createHeader(parsedFile, name)
     
-    tiData = tiFile.tiFile()
+    # Add the metadata and a footer of null bytes to the tidata object
+    tiData.metadata = createHeader(tiData.prgmdata, name)
+    tiData.footer = [b'\x00', b'\x00']
     
-    tiData.metadata = header
-    tiData.prgmdata = parsedFile
-    tiData.footer = [b'\x00', b'\x00', b'\x00']
-    
-    #save = input("\n Would you like to save this output?  y/n: ")
-    # Saving by default, since printing compiled data to the console
-    # isn't terribly useful.
-    # Call saveFile to determine whether to save the output and save it
+    # Write the tile to disk
     tiFile.write(name, tiData)
     
 

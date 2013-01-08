@@ -213,7 +213,7 @@ def tibasicFunctions(flip):
     (b'\x04', ' -> '),
     (b'\xbb', 'randInt'),
     (b'\xd6', 'Lbl '),
-    (b'\xe0', 'Output('),
+    (b'\xe0', 'Output'),
     (b'\xd9', 'Stop'),
     (b'\xe1', 'ClrHome'),
     (b'\xd1', 'While '),
