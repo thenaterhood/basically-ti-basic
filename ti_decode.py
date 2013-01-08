@@ -14,37 +14,13 @@ import binascii
 from copy import deepcopy
 import dictionaries
 import tiFile
+import common
 
 
 def init():    
     print("TI BASIC file decoder.  Decodes TIBASIC files into plaintext.\n")
     print("Nate Levesque <public@thenaterhood.com>.")
     print("Visit www.thenaterhood.com/projects for more software\n")
-    
-def getName():
-    """
-    Requests the name of a file to decode from the user and checks
-    that the file exists before returning it.
-    
-    Arguments:
-        none
-        
-    Returns:
-        string with the name of the file
-    """
-        
-    # Implements a catchblock and tests if the file exists
-    while True:
-        filename = input("Enter the name of the file to decode, including the .8Xp extension: ")
-
-        try:
-            file = open(filename, 'r')
-            file.close()
-            return filename
-        except:
-            print("File could not be found.")
-    # Code below is for rapid debugging, should be commented
-    #return "FIBO.8Xp"
 
 def translate(dictionary, content, escapeCharExists, escapeChar):
     """
@@ -166,32 +142,6 @@ def parseFunction(fileContents):
     # calls the translate function with the function dictionary,
     # contents of the file, and no escape character set
     return translate(function_dict, fileContents, False, '')
-    
-def saveFile(contents, save, filename):
-    """
-    Saves a file to disk
-    
-    Arguments:
-        contents (list): a list of lines to store into the file
-        save (string): a y or an n of whether or not to create the file
-        filename (string): the filename to save the file into
-    Returns:
-        nothing
-    """
-    # Adds a txt extension to the filename
-    filename = (filename + ".txt")
-    
-    # Determins whether or not to save the file
-    if (save == 'n'):
-        print("Okay, done without saving")
-            
-    if (save == 'y'):
-        # Opens the file for writing and saves the content into it
-        with open(filename, "w") as output:
-            for item in contents:
-                output.write(item)
-            output.write("\n")
-        print("Saved file as " + filename)
             
 
 def main():
@@ -207,7 +157,7 @@ def main():
     init()
     
     # Request a filename from the user
-    filename = getName()
+    filename = common.getFName()
     
     # Read the file
     tiData = tiFile.read(filename)
@@ -236,8 +186,10 @@ def main():
     print(string)
     save = input("\n Would you like to save this output?  y/n: ")
     
-    # Call saveFile to determine whether to save the output and save it
-    saveFile(parsedFile, save, filename)
+    if (save in ['y', 'Y']):
+        common.saveFile(parsedFile, filename)
+    else:
+        print("Done.  Exiting without saving.")    
     
 
 # Call the main method

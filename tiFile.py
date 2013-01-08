@@ -6,7 +6,13 @@ description: Reads and writes TI-Basic .8Xp files and returns
     structures relevant to the file if appropriate.
     
 TODO:
+    add additional validation to the validate function
     
+    add an empty structure or otherwise change
+    the construction of a tiFile object
+    
+    figure out why when reading the file, the first byte
+    goes missing
 """
 import dictionaries
 
@@ -113,14 +119,9 @@ def write(filename, tiData):
     # Opens the file to write binary
     outFile = open(filename, "wb")
     
-    # Writes the metadata to the file
+    # Writes the program file to disk
     writeBytes(outFile, tiData.metadata)
-    
-    # Writes the program data to the file            
     writeBytes(outFile, tiData.prgmdata)
-    
-    # Writes the footer to the file (can be an emptylist, file
-    # does not seem to rely on footer)
     writeBytes(outFile, tiData.footer)
     
     # Returns true for now, will later possibly perform some check to

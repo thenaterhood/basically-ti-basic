@@ -19,37 +19,13 @@ import binascii
 from copy import deepcopy
 import dictionaries
 import tiFile
+import common
 
 
 def init():    
     print("TI BASIC file encoder.  Compiles text to TIBASIC.\n")
     print("Nate Levesque <public@thenaterhood.com>.")
     print("Visit www.thenaterhood.com/projects for more software\n")
-    
-def getName():
-    """
-    Requests the name of a file to decode from the user and checks
-    that the file exists before returning it.
-    
-    Arguments:
-        none
-        
-    Returns:
-        string with the name of the file
-    """
-        
-    # Implements a catchblock and tests if the file exists
-    while True:
-        filename = input("Enter the name of the file to compile, including the .8Xp extension: ")
-
-        try:
-            file = open(filename, 'r')
-            file.close()
-            return filename
-        except:
-            print("File could not be found.")
-    # Code below is for rapid debugging, should be commented
-    #return "FIBO2.txt"
     
 def readFile(filename):
     """
@@ -376,7 +352,7 @@ def main():
     init()
     
     # Request a filename from the user
-    filename = getName()
+    filename = common.getFName()
     
     # Read the file
     fileContents = readFile(filename)
