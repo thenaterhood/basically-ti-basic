@@ -81,6 +81,19 @@ def read(filename):
         
     return fileData
     
+def writeBytes(openFile, data):
+    """
+    Iterates through a list of bytes and writes them to a file.
+    Arguments:
+        openFile (file): an open file
+        data (list): a list of bytes to write
+    """
+    for byte in data:
+        if (isinstance(byte, bytes)):
+            openFile.write(byte)
+        else:
+            print("Error writing byte to file.  Was '"+byte+"'.  Continuing, but compiled file might have problems.")    
+    
 def write(filename, tiData):
     """
     Writes a .8xp TI-Basic file to disk as bytes
@@ -101,26 +114,14 @@ def write(filename, tiData):
     outFile = open(filename, "wb")
     
     # Writes the metadata to the file
-    for byte in tiData.metadata:
-        if (isinstance(byte, bytes)):
-            outFile.write(byte)
-        else:
-            print("Error writing byte to file.  Was string '"+byte+"'.  Continuing, but compiled file might have problems.")
+    writeBytes(outFile, tiData.metadata)
     
     # Writes the program data to the file            
-    for byte in tiData.prgmdata:
-        if (isinstance(byte, bytes)):
-            outFile.write(byte)
-        if (not isinstance(byte, bytes)):
-            print("Error writing byte to file.  Was string '"+byte+"'.  Continuing, but compiled file might have problems.")
+    writeBytes(outFile, tiData.prgmdata)
     
     # Writes the footer to the file (can be an emptylist, file
     # does not seem to rely on footer)
-    for byte in tiData.footer:
-        if (isinstance(byte, bytes)):
-            outFile.write(byte)
-        if (not isinstance(byte, bytes)):
-            print("Error writing byte to file.  Was string '"+byte+"'.  Continuing, but compiled file might have problems.")
+    writeBytes(outFile, tiData.footer)
     
     # Returns true for now, will later possibly perform some check to
     # make sure it wrote what it intended.  For now needs to just
