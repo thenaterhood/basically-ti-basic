@@ -18,7 +18,7 @@ TODO:
 import binascii
 from copy import deepcopy
 import dictionaries
-import ti_file
+import tiFile
 
 
 def init():    
@@ -392,7 +392,7 @@ def main():
     # Create the file header/metadata
     header = createHeader(parsedFile, name)
     
-    tiData = ti_file.tiFile()
+    tiData = tiFile.tiFile()
     
     tiData.metadata = header
     tiData.prgmdata = parsedFile
@@ -402,7 +402,7 @@ def main():
     # Saving by default, since printing compiled data to the console
     # isn't terribly useful.
     # Call saveFile to determine whether to save the output and save it
-    ti_file.writeFile(name, tiData)
+    tiFile.write(name, tiData)
     
 
 # Call the main method

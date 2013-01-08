@@ -36,7 +36,7 @@ class tiFile():
             
         return string
         
-def readFile(filename):
+def read(filename):
     """
     Reads a TI-Basic .8xp file byte by byte
     and populates the fields of the data object that
@@ -80,7 +80,7 @@ def readFile(filename):
         
     return fileData
     
-def writeFile(filename, tiData):
+def write(filename, tiData):
     """
     Writes a .8xp TI-Basic file to disk as bytes
      

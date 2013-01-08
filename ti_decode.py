@@ -13,7 +13,7 @@ TODO:
 import binascii
 from copy import deepcopy
 import dictionaries
-import ti_file
+import tiFile
 
 
 def init():    
@@ -210,9 +210,9 @@ def main():
     filename = getName()
     
     # Read the file
-    tiData = ti_file.readFile(filename)
+    tiData = tiFile.read(filename)
     
-    if (not ti_file.validate(tiData)):
+    if (not tiFile.validate(tiData)):
         raise RuntimeError("The file requested doesn't appear to be a TI-Basic file.")
     
     # A basic check to make sure the file contains program data,
