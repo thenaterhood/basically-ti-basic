@@ -11,6 +11,7 @@ Contents
     ti_encode.py    a compiler for TI-Basic files (text -> TI-Basic)
     dictionaries.py the dictionaries required to compile and decompile
     tiFile.py       contains structures and functions for reading/writing/validating TI-Basic files
+    common.py       contains common code for getting filenames, reading, and writing text files
     FIBO.8Xp        a compiled test program.  Calculates the Fibonacci sequence.
     
 ti_decode.py
