@@ -39,7 +39,6 @@ def saveFile(contents, filename):
     
     Arguments:
         contents (list): a list of lines to store into the file
-        save (string): a y or an n of whether or not to create the file
         filename (string): the filename to save the file into
     Returns:
         nothing
