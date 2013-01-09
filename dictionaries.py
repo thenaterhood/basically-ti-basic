@@ -231,6 +231,28 @@ def tibasicFunctions(flip):
     else:
         return dictionary
         
+def allDicts(flip):
+    """
+    Returns all the available dictionaries for compiling/decompiling
+    as a list of dictionaries.
+    
+    Arguments:
+        flip (bool): return the dictionaries with keys/values reversed
+            or not
+            
+    Returns:
+        all (list): a list of all available dictionaries
+    """
+    all = [
+    standardASCII(flip),
+    lowercaseASCII(flip),
+    symbolsASCII(flip),
+    whitespace(flip),
+    tibasicFunctions(flip),
+    ]
+    
+    return all
+        
 def mimetype():
     """
     Returns a list containing the bytes that define the mimetype
