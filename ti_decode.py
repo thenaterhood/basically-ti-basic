@@ -67,82 +67,51 @@ def translate(dictionary, content, escapeCharExists, escapeChar):
             pass 
                 
     return translation
-
-def parseASCII(fileContents):
+    
+def parseFile(unparsedFile):
     """
-    Parses the TI83 hex codes for standard ascii characters and replaces
-    them with the ascii equivalent.
+    Parses the TI-Basic .8Xp file and translates the byte values
+    for tokens and characters into their plaintext equivalent
+    so the file can be viewed off the calculator.  Replaces the former
+    parseWhitespace and parseFunction functions, as they weren't
+    specialized in any particular way after the dictionaries were
+    moved out of them.
     
     Arguments:
-        fileContents (list): a list containing byte values read from
-            a file
+        fileContents (list): the byte contents of the file to parse
+        
     Returns:
-        a list containing the file with ascii characters in the place
-        of byte values that were interpreted and converted
+        parsedFile (list): a list containing the converted file, but with
+            unparsed byte values still intact (python will convert these
+            to a string representation when printing/saving)
+            
     """
-    # make a deepcopy of the list so the original isn't modified
-    ascii_parsed = deepcopy(fileContents)
+    fileContents = deepcopy(unparsedFile)
     
-    # A dictionary mapping each TI83 uppercase character code with its
-    # ASCII equivalent
+    # Parse the uppercase letters and numbers
     ascii_dict = dictionaries.standardASCII(False)
+    parsedFile = translate(ascii_dict, fileContents, False, '')
     
-    # Call translate with the uppercase dictionary, the file contents
-    # and no escape code set.
-    ascii_parsed = translate(ascii_dict, ascii_parsed, False, '')
-      
-    # A dictionary mapping each TI83 lowercase letter code to its
-    # ascii lowercase equivalent
+    # Parse the lowercase letters, with their escape values
     ascii_lower_dict = dictionaries.lowercaseASCII(False)
+    parsedFile = translate(ascii_lower_dict, parsedFile, True, b'\xbb')
     
-    # Call translate with the lowercase dictionary, the file contents,
-    # and the escape character b'\xbb' set
-    ascii_parsed = translate(ascii_lower_dict, ascii_parsed, True, b'\xbb')
-    
-    # Dictionary mapping each TI83 symbol with its ascii equivalent.
-    # MUST be called AFTER the lowercase letters are replaced because
-    # some lowercase letters have the same hex value and need to be
-    # interpreted with their escape characters first                
+    # Parses the ascii symbols to their plaintext equivalents.
+    # NOTE: this must be called AFTER lowercase letters are parsed,
+    # as some symbols have the same byte values as lowercase letters
+    # in TI-Basic.
     ascii_symbol_dict = dictionaries.symbolsASCII(False)
+    parsedFile = translate(ascii_symbol_dict, parsedFile, False, '')
     
-    # Call translate with the ascii symbol dictionary, the file contents,
-    # and no escape character set
-    ascii_parsed = translate(ascii_symbol_dict, ascii_parsed, False, '')
-    
-    return ascii_parsed
-
-def parseWhitespace(fileContents):
-    """
-    Parses the TI83 whitespace codes
-    
-    Arguments:
-        fileContents (list): a list of the byte values read from the file
-    Returns:
-        a list of byte values with the whitespace codes replaced with
-        their ascii equivalents
-    """
+    # Parse whitespace byte codes into plaintext
     whitespace_dict = dictionaries.whitespace(False)
-            
-    return translate(whitespace_dict, fileContents, False, '')
-
-def parseFunction(fileContents):
-    """
-    Converts the TI83 byte values for TI-BASIC functions to plaintext
+    parsedFile = translate(whitespace_dict, parsedFile, False, '')
     
-    Arguments:
-        fileContents (list): a list of byte values read from the file
-    Returns:
-        a list with the byte values for functions replaced with their
-        plaintext equivalents
-    """
-    
-    # Dictionary mapping function hex codes to their plaintext values
+    # Parse the ti-basic tokens to plaintext words
     function_dict = dictionaries.tibasicFunctions(False)
-
-    # calls the translate function with the function dictionary,
-    # contents of the file, and no escape character set
-    return translate(function_dict, fileContents, False, '')
-            
+    parsedFile = translate(function_dict, parsedFile, False, '')
+    
+    return parsedFile
 
 def main():
     """
@@ -172,11 +141,7 @@ def main():
     else:
         raise RuntimeError("FATAL: The file requested does not contain program data")
         
-    
-    # Parse the file.  Again, order matters here
-    parsedFile = parseASCII(fileContents)
-    parsedFile = parseWhitespace(parsedFile)
-    parsedFile = parseFunction(parsedFile)
+    parsedFile = parseFile(fileContents)
     
     # Create a string representation of the parsed file that can be
     # printed to the console
