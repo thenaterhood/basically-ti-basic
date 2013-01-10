@@ -183,7 +183,7 @@ def whitespace(flip):
             plaintext
     """
     dictionary = dict([
-    (b'?', '\n:'),
+    (b'?', '\n'),
     (b')', ' ')
     ])
     
@@ -211,7 +211,7 @@ def tibasicFunctions(flip):
     (b'\xde', 'Disp '),
     (b'\xdd', 'Prompt '),
     (b'\xce', 'If '),
-    (b'\x04', ' -> '),
+    (b'\x04', '-> '),
     (b'\xbb', 'randInt'),
     (b'\xd6', 'Lbl '),
     (b'\xe0', 'Output'),
