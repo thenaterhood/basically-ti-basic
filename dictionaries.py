@@ -22,7 +22,7 @@ def reverseDictionary(dictionary):
     """
     flipped = dict()
     for key in dictionary:
-        flipped[dictionary[key].strip()] = key
+        flipped[dictionary[key]] = key
      
     return flipped
     
