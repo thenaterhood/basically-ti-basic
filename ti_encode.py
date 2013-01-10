@@ -241,7 +241,6 @@ def parseFunction(fileContents):
         stripped_dict[key.strip(' ,\n')] = function_dict[key]
     
     parsed = translate(stripped_dict, parsed, False, '')
-    print(parsed)
     
     return parsed
 
