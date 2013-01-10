@@ -145,14 +145,16 @@ def parseWhitespace(fileContents):
     """
     
     parsedFile = []
-    for i in range(0, len(fileContents)):
-        if (fileContents[i][0] == ":"):
-            parsedFile.append(b'?')
-            parsedFile.append(fileContents[i][1:])
-                        
-        if (fileContents[i][0] != ":"):
-            parsedFile.append(fileContents[i])
-    
+    try:
+        for i in range(0, len(fileContents)):
+            if (fileContents[i][0] == ":"):
+                parsedFile.append(b'?')
+                parsedFile.append(fileContents[i][1:])
+                            
+            if (fileContents[i][0] != ":"):
+                parsedFile.append(fileContents[i])
+    except:
+        pass
     # Commented, because doing this doesn't actually hold any benefit
     # with how the file is currently dealt with
     
@@ -175,12 +177,42 @@ def parseLine(line):
     unParsed = deepcopy(line)[1:]
     
     # Parse any comments in the line, denoted by '"', as 
-    # they should be in tibasic.
+    # they should be in tibasic.  This section works as expected.
+
+    if (len(unParsed) == 0):
+        return ''
+        
     if (unParsed[0] == '"'):
         parsed = parseASCII(unParsed)
         return parseWhitespace(parsed)
+        
+    # Checks to see if the line starts with a function definition,
+    # and if it does converts it to the appropriate token then
+    # calls the function again for the continuation of the line
+    """
+    unParsedLineStart = unParsed.split()[0]
     
-    return 'nul'
+    try:
+        function = dictionaries.tibasicFunctions(True)[unParsedLineStart]
+    except:
+        function = dictionaries.tibasicFunctions(True)[unParsedLineStart + " "]
+    
+    if ( function in dictionaries.tibasicFunctions(True)):
+        textLength = len(unParsed.split()[0])
+        nextSection = parseLine(unParsed[textLength:])
+        print(nextSection)
+        
+        if (not isinstance(nextSection, list)):
+            nextSection = [nextSection]
+        parsed = [dictionaries.tibasicFunctions(True)[unParsed.split()[0]] ] + nextSection
+        #parsed = parseASCII(parsed)
+        #parsed = parseWhitespace(parsed)
+        return parsed
+        
+    else:
+        return parseASCII(line)
+    """
+    return line
             
 
 def parseFunction(fileContents):
@@ -201,7 +233,17 @@ def parseFunction(fileContents):
 
     # calls the translate function with the function dictionary,
     # contents of the file, and no escape character set
-    return translate(function_dict, fileContents, False, '')
+    parsed = translate(function_dict, fileContents, False, '')
+    # Because of issues with spaces, now stripping spaces from the
+    # code and trying again.
+    stripped_dict = dict()
+    for key in function_dict:
+        stripped_dict[key.strip(' ,\n')] = function_dict[key]
+    
+    parsed = translate(stripped_dict, parsed, False, '')
+    print(parsed)
+    
+    return parsed
 
 def splitBytes(contents):
     """
@@ -380,15 +422,31 @@ def main():
     # Read the file
     fileContents = readFile(filename)
     
+    # Parses any code comments
+    parsed = []
     for line in fileContents:
-        print(parseLine(line))
-        
-    input()
+        try:
+            parsed = parsed + parseLine(line)
+        except:
+            parsed = parsed + [parseLine(line)]
+    
+    # Splits the remainder into pieces and parses it like before.        
+    split = []
+    for i in range(0,len(parsed)):
+        if (isinstance(parsed[i], str)):
+            split = split + parsed[i].strip(':').split() 
+        else:
+            split.append(parsed[i])
+   
+    parsed = split
+
     # Parse the file.  Again, order matters here
-    tiData.prgmdata = parseWhitespace(fileContents)
+    tiData.prgmdata = parseWhitespace(parsed)
     tiData.prgmdata = parseFunction(tiData.prgmdata)
     tiData.prgmdata = splitBytes(tiData.prgmdata)
     tiData.prgmdata = parseASCII(tiData.prgmdata)
+    tiData.prgmdata = parseWhitespace(tiData.prgmdata)
+
     
     # Break the name of the program off the filename
     name = (filename.split('.')[0])
