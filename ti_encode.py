@@ -41,8 +41,7 @@ def readFile(filename):
     
     # Opens the file and reads it one word at a time into an array
     for line in open(filename, "r"):
-        for word in line.split():
-            fileContents.append(word)
+        fileContents.append(line)
         
     return fileContents
 
@@ -157,9 +156,32 @@ def parseWhitespace(fileContents):
     # Commented, because doing this doesn't actually hold any benefit
     # with how the file is currently dealt with
     
-    #whitespace_dict = dictionaries.whitespace(True)
-    #return translate(whitespace_dict, fileContents, False, '')
-    return parsedFile
+    whitespace_dict = dictionaries.whitespace(True)
+    return translate(whitespace_dict, fileContents, False, '')
+    #return parsedFile
+    
+def parseLine(line):
+    """
+    Parses a line of TI-Basic code from plaintext -> tiBasic.
+    Observes text and comments, so such things are now safe to compile.
+    Runs through and parses comments and text, followed by newlines,
+    followed by TI-Basic tokens.
+    
+    Arguments:
+        line (str): a line of plaintext tibasic code
+    Returns:
+        parsedLine (list): a list of bytes from the parsed line
+    """
+    unParsed = deepcopy(line)[1:]
+    
+    # Parse any comments in the line, denoted by '"', as 
+    # they should be in tibasic.
+    if (unParsed[0] == '"'):
+        parsed = parseASCII(unParsed)
+        return parseWhitespace(parsed)
+    
+    return 'nul'
+            
 
 def parseFunction(fileContents):
     """
@@ -357,6 +379,11 @@ def main():
     
     # Read the file
     fileContents = readFile(filename)
+    
+    for line in fileContents:
+        print(parseLine(line))
+        
+    input()
     # Parse the file.  Again, order matters here
     tiData.prgmdata = parseWhitespace(fileContents)
     tiData.prgmdata = parseFunction(tiData.prgmdata)
