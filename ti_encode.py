@@ -214,7 +214,7 @@ def parseLine(line):
     else:
         return parseASCII(line)
     """
-    return line
+    return [line]
             
 
 def parseFunction(fileContents):
@@ -426,9 +426,10 @@ def main():
     # Parses any code comments
     parsed = []
     for line in fileContents:
-        try:
+        if ( isinstance(line, list) or isinstance(line, str) ):
             parsed = parsed + parseLine(line)
-        except:
+
+        else:
             parsed = parsed + [line]
                     
     
