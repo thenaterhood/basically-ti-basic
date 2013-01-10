@@ -105,6 +105,7 @@ def parseFile(unparsedFile):
     
     # Parse whitespace byte codes into plaintext
     whitespace_dict = dictionaries.whitespace(False)
+    # Adjusts the dictionary entry for newlines so they include a ':'
     whitespace_dict[b'?'] = '\n:'
     parsedFile = translate(whitespace_dict, parsedFile, False, '')
     
