@@ -429,7 +429,8 @@ def main():
         try:
             parsed = parsed + parseLine(line)
         except:
-            parsed = parsed + [parseLine(line), b'?']
+            parsed = parsed + [line]
+                    
     
     # Splits the remainder into pieces and parses it like before.        
     split = []
@@ -441,12 +442,13 @@ def main():
    
     parsed = split
 
+    print(parsed)
     # Parse the file.  Again, order matters here
-    tiData.prgmdata = parseWhitespace(parsed)
-    tiData.prgmdata = parseFunction(tiData.prgmdata)
+    #tiData.prgmdata = parseWhitespace(parsed)
+    tiData.prgmdata = parseFunction(parsed)
     tiData.prgmdata = splitBytes(tiData.prgmdata)
     tiData.prgmdata = parseASCII(tiData.prgmdata)
-    tiData.prgmdata = parseWhitespace(tiData.prgmdata)
+    #tiData.prgmdata = parseWhitespace(tiData.prgmdata)
 
     
     # Break the name of the program off the filename
