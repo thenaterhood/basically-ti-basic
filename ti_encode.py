@@ -42,7 +42,7 @@ def readFile(filename):
     # Opens the file and reads it one word at a time into an array
     for line in open(filename, "r"):
         fileContents.append(line)
-        
+        fileContents.append(b'?')
     return fileContents
 
     
@@ -145,6 +145,7 @@ def parseWhitespace(fileContents):
     """
     
     parsedFile = []
+    """
     try:
         for i in range(0, len(fileContents)):
             if (fileContents[i][0] == ":"):
@@ -155,6 +156,7 @@ def parseWhitespace(fileContents):
                 parsedFile.append(fileContents[i])
     except:
         pass
+    """
     # Commented, because doing this doesn't actually hold any benefit
     # with how the file is currently dealt with
     
@@ -186,10 +188,10 @@ def parseLine(line):
         parsed = parseASCII(unParsed)
         return parseWhitespace(parsed)
         
+    """   
     # Checks to see if the line starts with a function definition,
     # and if it does converts it to the appropriate token then
     # calls the function again for the continuation of the line
-    """
     unParsedLineStart = unParsed.split()[0]
     
     try:
@@ -238,7 +240,7 @@ def parseFunction(fileContents):
     # code and trying again.
     stripped_dict = dict()
     for key in function_dict:
-        stripped_dict[key.strip(' ,\n')] = function_dict[key]
+        stripped_dict[key.strip()] = function_dict[key]
     
     parsed = translate(stripped_dict, parsed, False, '')
     
@@ -427,7 +429,7 @@ def main():
         try:
             parsed = parsed + parseLine(line)
         except:
-            parsed = parsed + [parseLine(line)]
+            parsed = parsed + [parseLine(line), b'?']
     
     # Splits the remainder into pieces and parses it like before.        
     split = []
