@@ -147,7 +147,7 @@ def main():
     
     # Create a string representation of the parsed file that can be
     # printed to the console
-    string = ""
+    string = ":"
     for item in parsedFile:
         string += str(item)
     print(string)
