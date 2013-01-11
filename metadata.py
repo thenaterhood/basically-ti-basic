@@ -5,8 +5,6 @@ author: Nate Levesque <public@thenaterhood.com>
 description: Generates metadata for a .8Xp file.
 
 TODO:
-    complete overhaul of how the file is read so that comments and
-    text stop being a problem.
     
     there's the possibility of adding a verification function,
     since a large part of the file can be validated simply by checking
