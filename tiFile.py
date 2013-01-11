@@ -98,7 +98,7 @@ def writeBytes(openFile, data):
         if (isinstance(byte, bytes)):
             openFile.write(byte)
         else:
-            print("Error writing byte to file.  Was '"+byte+"'.  Continuing, but compiled file might have problems.")    
+            print("Error writing byte to file.  Was '"+str(byte)+"'.  Continuing, but compiled file might have problems.")    
     
 def write(filename, tiData):
     """
