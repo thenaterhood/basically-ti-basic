@@ -29,28 +29,22 @@ def getSize(size):
     # allowed to be, based on current knowledge of the metadata.
     absoluteLimit = 255*255
     
+    if (size >= absoluteLimit):
+        # Raise an error, since the file size can't be beyond the
+        # size defined in the absoluteLimit variable
+        raise RuntimeError("File is beyond the allowed size for compiled TI-Basic files: yours: " +str(size) +", limit:" +str(absoluteLimit))
+    
     headerSize = []
-    
-    if (size <= 255):
-        sizebyte = bytes([size])
-        headerSize.append(sizebyte)
-        headerSize.append(b'\x00')
-    
-    if (size >= 255 and size < absoluteLimit):
-        carrybyte = bytes([size//255])
-        sizebyte = bytes([ size - (255 * (size // 255)) ])
-        headerSize.append(sizebyte)
-        headerSize.append(carrybyte)
+ 
+    carrybyte = bytes([size//255])
+    sizebyte = bytes([ size - (255 * (size // 255)) ])
+    headerSize.append(sizebyte)
+    headerSize.append(carrybyte)
         
     # If the program is beyond the size that the file will allow,
     # an error needs to be raised because the file metadata doesn't
     # seem to make it possible for it to be larger.  Current limit
     # appears to be 255*255 providing I can math tonight.
-    
-    if (size >= absoluteLimit):
-        # Raise an error, since the file size can't be beyond the
-        # size defined in the absoluteLimit variable
-        raise RuntimeError("File is beyond the allowed size for compiled TI-Basic files: yours: " +str(size) +", limit:" +str(absoluteLimit))
 
     return headerSize
     
