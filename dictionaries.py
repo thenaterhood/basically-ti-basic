@@ -252,16 +252,3 @@ def allDicts(flip):
     ]
     
     return all
-        
-def mimetype():
-    """
-    Returns a list containing the bytes that define the mimetype
-    of a TI-Basic .8Xp file
-    
-    Arguments:
-        none
-    Returns:
-        (list): a list containing the bytes that define the mimetype
-            of the TI 83 program files
-    """
-    return [b'*',b'*',b'T',b'I',b'8',b'3',b'F',b'*',b'\x1a',b'\n']

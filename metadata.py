@@ -48,11 +48,11 @@ def getSize(size):
 
     return headerSize
     
-def createHeader(content, name):
+def createMeta(content, name):
     header = []
     # Appends the TI83 filetype header to the header file, followed
     # by its newline.  In ascii, header is **TI83F*[SUB][NEWLINE]
-    filetype = dictionaries.mimetype()
+    filetype = mimetype()
     
     for item in filetype:
         header.append(item)
@@ -145,3 +145,16 @@ def createHeader(content, name):
     header = header + getSize(size-2)
     
     return header
+    
+def mimetype():
+    """
+    Returns a list containing the bytes that define the mimetype
+    of a TI-Basic .8Xp file
+    
+    Arguments:
+        none
+    Returns:
+        (list): a list containing the bytes that define the mimetype
+            of the TI 83 program files
+    """
+    return [b'*',b'*',b'T',b'I',b'8',b'3',b'F',b'*',b'\x1a',b'\n']

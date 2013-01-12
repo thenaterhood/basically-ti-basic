@@ -15,6 +15,7 @@ TODO:
     goes missing
 """
 import dictionaries
+from metadata import mimetype
 
 class tiFile():
     """
@@ -149,7 +150,7 @@ def validate(tiData):
     # for some reason the first byte of the file doesn't get read
     # which will need to be looked into
 
-    if (fileType != dictionaries.mimetype()[1:]):
+    if (fileType != mimetype()[1:]):
         return False
     
     return True

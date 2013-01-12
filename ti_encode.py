@@ -20,7 +20,7 @@ from copy import deepcopy
 import dictionaries
 import tiFile
 import common
-from metadata import createHeader
+from metadata import createMeta
 
 
 def init():    
@@ -308,7 +308,6 @@ def main():
    
     parsed = split
 
-    print(parsed)
     # Parse the file.  Again, order matters here
     #tiData.prgmdata = parseWhitespace(parsed)
     tiData.prgmdata = parseFunction(parsed)
@@ -321,7 +320,7 @@ def main():
     name = (filename.split('.')[0])
     
     # Add the metadata and a footer of null bytes to the tidata object
-    tiData.metadata = createHeader(tiData.prgmdata, name)
+    tiData.metadata = createMeta(tiData.prgmdata, name)
     tiData.footer = [b'\x00', b'\x00']
     
     # Write the tile to disk
