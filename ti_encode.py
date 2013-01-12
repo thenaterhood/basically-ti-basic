@@ -40,7 +40,7 @@ def readFile(filename):
     """
     fileContents = []
     
-    # Opens the file and reads it one word at a time into an array
+    # Opens the file and reads it one line at a time into an array
     for line in open(filename, "r"):
         fileContents.append(line)
         fileContents.append(b'?')
@@ -184,10 +184,11 @@ def parseLine(line):
 
     if (len(unParsed) == 0):
         return ''
-        
-    if (unParsed[0] == '"'):
-        parsed = parseASCII(unParsed)
-        return parseWhitespace(parsed)
+      
+    for i in range(0, len(unParsed)):
+        if (unParsed[i] == '"'):
+            parsed = [ unParsed[:i] ] + parseWhitespace( parseASCII(unParsed[i:]) )
+            return parsed
         
     """   
     # Checks to see if the line starts with a function definition,
