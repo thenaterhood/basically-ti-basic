@@ -165,7 +165,7 @@ def parseWhitespace(fileContents):
     return translate(whitespace_dict, fileContents, False, '')
     #return parsedFile
     
-def parseLine(line):
+def parseText(line):
     """
     Parses a line of TI-Basic code from plaintext -> tiBasic.
     Observes text and comments, so such things are now safe to compile.
@@ -178,44 +178,19 @@ def parseLine(line):
         parsedLine (list): a list of bytes from the parsed line
     """
     unParsed = deepcopy(line)[1:]
-    
-    # Parse any comments in the line, denoted by '"', as 
-    # they should be in tibasic.  This section works as expected.
 
     if (len(unParsed) == 0):
         return ''
       
     for i in range(0, len(unParsed)):
         if (unParsed[i] == '"'):
-            parsed = [ unParsed[:i] ] + parseWhitespace( parseASCII(unParsed[i:]) )
+            j = i+1
+            while j < len(unParsed) and unParsed[j] != '"':
+                j+=1
+                
+            parsed = [ unParsed[:i] ] + parseWhitespace( parseASCII(unParsed[i:j]) ) + [ unParsed[j:] ]
             return parsed
         
-    """   
-    # Checks to see if the line starts with a function definition,
-    # and if it does converts it to the appropriate token then
-    # calls the function again for the continuation of the line
-    unParsedLineStart = unParsed.split()[0]
-    
-    try:
-        function = dictionaries.tibasicFunctions(True)[unParsedLineStart]
-    except:
-        function = dictionaries.tibasicFunctions(True)[unParsedLineStart + " "]
-    
-    if ( function in dictionaries.tibasicFunctions(True)):
-        textLength = len(unParsed.split()[0])
-        nextSection = parseLine(unParsed[textLength:])
-        print(nextSection)
-        
-        if (not isinstance(nextSection, list)):
-            nextSection = [nextSection]
-        parsed = [dictionaries.tibasicFunctions(True)[unParsed.split()[0]] ] + nextSection
-        #parsed = parseASCII(parsed)
-        #parsed = parseWhitespace(parsed)
-        return parsed
-        
-    else:
-        return parseASCII(line)
-    """
     return [line]
             
 
@@ -293,7 +268,7 @@ def main():
     parsed = []
     for line in fileContents:
         if ( isinstance(line, list) or isinstance(line, str) ):
-            parsed = parsed + parseLine(line)
+            parsed = parsed + parseText(line)
 
         else:
             parsed = parsed + [line]
