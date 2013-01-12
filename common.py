@@ -48,5 +48,5 @@ def saveFile(contents, filename):
     
     with open(filename, "w") as output:
         for item in contents:
-            output.write(item)
+            output.write(str(item))
         print("Saved file as " + filename)
