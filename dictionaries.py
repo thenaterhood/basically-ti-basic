@@ -22,7 +22,7 @@ def reverseDictionary(dictionary):
     """
     flipped = dict()
     for key in dictionary:
-        flipped[dictionary[key].strip()] = key
+        flipped[dictionary[key]] = key
      
     return flipped
     
@@ -183,7 +183,7 @@ def whitespace(flip):
             plaintext
     """
     dictionary = dict([
-    (b'?', '\n:'),
+    (b'?', '\n'),
     (b')', ' ')
     ])
     
@@ -211,7 +211,7 @@ def tibasicFunctions(flip):
     (b'\xde', 'Disp '),
     (b'\xdd', 'Prompt '),
     (b'\xce', 'If '),
-    (b'\x04', ' -> '),
+    (b'\x04', '-> '),
     (b'\xbb', 'randInt'),
     (b'\xd6', 'Lbl '),
     (b'\xe0', 'Output'),
@@ -230,6 +230,28 @@ def tibasicFunctions(flip):
         return reverseDictionary(dictionary)
     else:
         return dictionary
+        
+def allDicts(flip):
+    """
+    Returns all the available dictionaries for compiling/decompiling
+    as a list of dictionaries.
+    
+    Arguments:
+        flip (bool): return the dictionaries with keys/values reversed
+            or not
+            
+    Returns:
+        all (list): a list of all available dictionaries
+    """
+    all = [
+    standardASCII(flip),
+    lowercaseASCII(flip),
+    symbolsASCII(flip),
+    whitespace(flip),
+    tibasicFunctions(flip),
+    ]
+    
+    return all
         
 def mimetype():
     """
