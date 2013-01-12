@@ -82,8 +82,8 @@ def read(filename):
         return fileData
         
     else:
-        fileData.prgmdata = fileContents[73:len(fileContents)-4]
-        fileData.footer = fileContents[len(fileContents)-4:len(fileContents)]
+        fileData.prgmdata = fileContents[73:len(fileContents)-3]
+        fileData.footer = fileContents[len(fileContents)-3:len(fileContents)]
         
     return fileData
     
