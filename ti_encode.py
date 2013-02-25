@@ -102,6 +102,10 @@ def parseASCII(fileContents):
         a list containing the file with ascii characters in the place
         of byte values that were interpreted and converted
     """
+    
+    if ( len(fileContents) == 0):
+        return [ fileContents ]
+        
     # make a deepcopy of the list so the original isn't modified
     ascii_parsed = deepcopy(fileContents)
     
@@ -135,7 +139,10 @@ def parseASCII(fileContents):
     whitespace_dict = dictionaries.whitespace(True)
     ascii_parsed = translate(whitespace_dict, ascii_parsed, False, '')
     
-    return ascii_parsed + [b'?']
+    if fileContents[0] == '"':
+        return ascii_parsed + [ b'?' ]
+    else:
+        return ascii_parsed
 
 def parseWhitespace(fileContents):
     """
@@ -215,10 +222,19 @@ def parseFunction(fileContents):
     
     parsedFunction = []
     for item in fileContents:
-        item = item.partition('(')
-        item = item[0] + item[1]
-        if ( item in function_dict ):
-            parsedFunction = parsedFunction + [ function_dict[item] ]
+        if ( '(' in item ):
+            parts = item.partition('(')
+            item = parts[0] + parts[1]
+            arg = parts[2]
+            if ( item in function_dict ):
+                parsedFunction = parsedFunction + [ function_dict[item] ] + parseASCII(arg)
+        else:
+            parts = item.partition(' ')
+            item = parts[0]
+            arg = parts[2]
+            
+            if ( item in function_dict ):
+                parsedFunction = parsedFunction + [ function_dict[item] ] + parseASCII(arg)
                     
     return parsedFunction
     """        
@@ -279,7 +295,7 @@ def main():
     fileContents = readFile(filename)
     
     # Create an array to store the compiled data
-    code = [ b'?' ] * len(fileContents)
+    code = [ None ] * len(fileContents)
     
     # Split the lines up over spaces to isolate functions
     splitLines = []
@@ -295,6 +311,7 @@ def main():
                 code[i] = parseASCII( ' '.join( splitLines[i] ) )
                 parsedLines.append(i)
         except:
+            code[i] = b'?'
             parsedLines.append(i)
             
         i+=1
