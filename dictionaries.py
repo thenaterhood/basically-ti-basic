@@ -22,7 +22,7 @@ def reverseDictionary(dictionary):
     """
     flipped = dict()
     for key in dictionary:
-        flipped[dictionary[key]] = key
+        flipped[dictionary[key].strip()] = key
      
     return flipped
     
@@ -188,7 +188,10 @@ def whitespace(flip):
     ])
     
     if (flip):
-        return reverseDictionary(dictionary)
+        flipped = dict()
+        for key in dictionary:
+            flipped[dictionary[key]] = key
+        return flipped
     else:
         return dictionary
     
@@ -208,22 +211,22 @@ def tibasicFunctions(flip):
         Add the remainder of TI-Basic functions to the dictionary
     """
     dictionary = dict([
-    (b'\xde', 'Disp'),
-    (b'\xdd', 'Prompt'),
-    (b'\xce', 'If'),
-    (b'\x04', '->'),
+    (b'\xde', 'Disp '),
+    (b'\xdd', 'Prompt '),
+    (b'\xce', 'If '),
+    (b'\x04', ' -> '),
     (b'\xbb', 'randInt'),
-    (b'\xd6', 'Lbl'),
+    (b'\xd6', 'Lbl '),
     (b'\xe0', 'Output('),
     (b'\xd9', 'Stop'),
     (b'\xe1', 'ClrHome'),
-    (b'\xd1', 'While'),
-    (b'@', 'and'),
-    (b'<', 'or'),
+    (b'\xd1', 'While '),
+    (b'@', ' and '),
+    (b'<', ' or '),
     (b'\xd4', 'End'),
     (b'\xad', 'getKey'),
     (b'r', 'Ans'),
-    (b'\xd7', 'Goto')
+    (b'\xd7', 'Goto ')
     ])
     
     if (flip):
