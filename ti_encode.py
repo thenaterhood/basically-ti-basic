@@ -219,22 +219,22 @@ def parseFunction(fileContents):
     # values and reverse the key/values since the dictionary is written
     # for decompiling.
     function_dict = dictionaries.tibasicFunctions(True)
-    
+    print(fileContents)
     parsedFunction = []
     for item in fileContents:
         if ( '(' in item ):
             parts = item.partition('(')
-            item = parts[0] + parts[1]
-            arg = parts[2]
-            if ( item in function_dict ):
-                parsedFunction = parsedFunction + [ function_dict[item] ] + parseASCII(arg)
-        else:
-            parts = item.partition(' ')
             item = parts[0]
             arg = parts[2]
-            
             if ( item in function_dict ):
-                parsedFunction = parsedFunction + [ function_dict[item] ] + parseASCII(arg)
+                parsedFunction = parsedFunction + [ function_dict[item] ] + parseASCII( '(' + arg)
+            else:
+                item = item + parts[1]
+                if ( item in function_dict):
+                    parsedFunction = parsedFunction + [ function_dict[item] ] + parseASCII( arg )
+        else:
+            if ( item in function_dict ):
+                parsedFunction = parsedFunction + [ function_dict[item] ]
                     
     return parsedFunction
     """        
@@ -329,7 +329,6 @@ def main():
             tiData.prgmdata = tiData.prgmdata + item
         except:
             tiData.prgmdata = tiData.prgmdata + [item]
-    print(tiData.prgmdata)
     
     
     # Parses any code comments
