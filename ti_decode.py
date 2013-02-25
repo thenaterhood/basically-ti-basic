@@ -13,7 +13,7 @@ TODO:
 import binascii
 from copy import deepcopy
 import dictionaries
-import tiFile
+from tiFile import tiFile
 import common
 
 
@@ -131,15 +131,18 @@ def main():
     filename = common.getFName()
     
     # Read the file
-    tiData = tiFile.read(filename)
+    tiData = tiFile(filename)
     
-    if (not tiFile.validate(tiData)):
+    if ( not tiData.validate() ):
         raise RuntimeError("The file requested doesn't appear to be a TI-Basic file.")
     
     # A basic check to make sure the file contains program data,
     # raises an error if not
-    if (tiData.prgmdata != 'null'):
+    if ( tiData.prgmdata ):
         fileContents = tiData.prgmdata
+        print("Successfully read ti file " + filename)
+        print(tiData)
+        input("Strike enter to view program data")
     else:
         raise RuntimeError("FATAL: The file requested does not contain program data")
         
@@ -151,7 +154,7 @@ def main():
     for item in parsedFile:
         string += str(item)
     print(string)
-    save = input("\n Would you like to save this output?  y/n: ")
+    save = input("\nWould you like to save this output?  y/n: ")
     
     if (save in ['y', 'Y']):
         common.saveFile(parsedFile, filename)

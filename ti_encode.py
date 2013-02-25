@@ -18,7 +18,7 @@ TODO:
 import binascii
 from copy import deepcopy
 import dictionaries
-import tiFile
+from tiFile import tiFile
 import common
 from metadata import createMeta
 
@@ -209,6 +209,20 @@ def parseFunction(fileContents):
     # values and reverse the key/values since the dictionary is written
     # for decompiling.
     function_dict = dictionaries.tibasicFunctions(True)
+    
+    parsedFunction = []
+    for item in fileContents:
+        if ( not isinstance(item, bytes) ):
+            for key in function_dict:
+                if ( key in item ):
+                    start = item.find(key)
+                    end = item.find(key) + len(key)
+                    parsedFunction = parsedFunction + [item[0:start]] + [function_dict[item[start:end]]] + [item[end:]]
+                    print(parsedFunction)
+                    return parsedFunction
+                    
+    return fileContents
+    """        
 
     # calls the translate function with the function dictionary,
     # contents of the file, and no escape character set
@@ -222,6 +236,7 @@ def parseFunction(fileContents):
     parsed = translate(stripped_dict, parsed, False, '')
     
     return parsed
+    """
 
 def splitBytes(contents):
     """
@@ -259,7 +274,7 @@ def main():
     
     # Request a filename from the user
     filename = common.getFName()
-    tiData = tiFile.tiFile()
+    tiData = tiFile()
     
     # Read the file
     fileContents = readFile(filename)
@@ -269,25 +284,34 @@ def main():
     for line in fileContents:
         if ( isinstance(line, list) or isinstance(line, str) ):
             parsed = parsed + parseText(line)
-
+        else:
+            parsed = parsed + [line]
+    #print(parsed)
+    
+    fileContents = deepcopy(parsed)
+    if (isinstance(parsed, str)):
+        print("Yes, string")
+    parsed = []
+    
+    for line in fileContents:
+        if ( isinstance(line, list) or isinstance(line, str) ):
+            parsed = parsed + [parseFunction(line)]
         else:
             parsed = parsed + [line]
                     
-    
-    # Splits the remainder into pieces and parses it like before.        
+    # Splits the remainder into pieces and parses it like before. 
     split = []
     for i in range(0,len(parsed)):
         if (isinstance(parsed[i], str)):
             split = split + parsed[i].strip(':').split() 
         else:
             split.append(parsed[i])
-   
     parsed = split
 
     # Parse the file.  Again, order matters here
     #tiData.prgmdata = parseWhitespace(parsed)
-    tiData.prgmdata = parseFunction(parsed)
-    tiData.prgmdata = splitBytes(tiData.prgmdata)
+    #tiData.prgmdata = parseFunction(parsed)
+    tiData.prgmdata = splitBytes(parsed)
     tiData.prgmdata = parseASCII(tiData.prgmdata)
     #tiData.prgmdata = parseWhitespace(tiData.prgmdata)
 
@@ -300,7 +324,11 @@ def main():
     tiData.footer = [b'\x00', b'\x00']
     
     # Write the tile to disk
-    tiFile.write(name, tiData)
+    tiData.write(name)
+    
+    print("Written to file: ")
+    print(tiData)
+    print("Saved to " +name +'.8Xp')
     
 
 # Call the main method
