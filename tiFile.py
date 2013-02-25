@@ -8,9 +8,6 @@ description: Reads and writes TI-Basic .8Xp files and returns
 TODO:
     add additional validation to the validate function
     
-    add an empty structure or otherwise change
-    the construction of a tiFile object
-    
     figure out why when reading the file, the first byte
     goes missing
 """
@@ -112,7 +109,7 @@ class tiFile():
         # function if a big problem pops up        
         return True
         
-    def validate(tiData):
+    def validate(self):
         """
         Validates that a .8Xp file is actually a .8Xp file.
         Currently only checks sections of the metadata.  For now
@@ -120,13 +117,12 @@ class tiFile():
         that are not TI-Basic files.
         
         Arguments:
-            tiData (tiFile): a tiFile object containing the ti-basic file
-                to validate
+			self
                 
         Returns:
             valid (boolean): a boolean value indicating if the file is valid
         """    
-        fileType = tiData.metadata[:9]
+        fileType = self.metadata[:9]
         # Validating against bytes 1-9 of the mimetype.
         # for some reason the first byte of the file doesn't get read
         # which will need to be looked into

@@ -10,9 +10,6 @@ TODO:
     since a large part of the file can be validated simply by checking
     the metadata.
     
-    move the mimetype dictionary to this file, as it would be
-    more appropriate to put it in here than in dictionaries
-    
 """
 import dictionaries
 
