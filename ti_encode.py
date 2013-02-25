@@ -237,21 +237,6 @@ def parseFunction(fileContents):
                 parsedFunction = parsedFunction + [ function_dict[item] ]
                     
     return parsedFunction
-    """        
-
-    # calls the translate function with the function dictionary,
-    # contents of the file, and no escape character set
-    parsed = translate(function_dict, fileContents, False, '')
-    # Because of issues with spaces, now stripping spaces from the
-    # code and trying again.
-    stripped_dict = dict()
-    for key in function_dict:
-        stripped_dict[key.strip()] = function_dict[key]
-    
-    parsed = translate(stripped_dict, parsed, False, '')
-    
-    return parsed
-    """
 
 def splitBytes(contents):
     """
@@ -316,6 +301,7 @@ def main():
             
         i+=1
     
+    # Parses functions into byte tokens
     i = 0
     while i < len(splitLines):    
         if ( i not in parsedLines ):
@@ -323,45 +309,13 @@ def main():
             parsedLines.append(i)
         i+=1
     
+    # Merges the lists of bytes into the tiData.prgmdata field
     tiData.prgmdata = []
     for item in code:
         try:
             tiData.prgmdata = tiData.prgmdata + item
         except:
             tiData.prgmdata = tiData.prgmdata + [item]
-    
-    
-    # Parses any code comments
-    #parsed = []
-    #for line in fileContents:
-    #    if ( isinstance(line, list) or isinstance(line, str) ):
-    #        parsed = parsed + parseText(line)
-    #    else:
-    #        parsed = parsed + [line]
-    
-    #parsed = []
-    
-    #for line in fileContents:
-    #    if ( isinstance(line, list) or isinstance(line, str) ):
-    #        parsed = parsed + [parseFunction(line)]
-    #    else:
-    #        parsed = parsed + [line]
-                    
-    # Splits the remainder into pieces and parses it like before. 
-    #split = []
-    #for i in range(0,len(parsed)):
-    #    if (isinstance(parsed[i], str)):
-    #        split = split + parsed[i].strip(':').split() 
-    #    else:
-    #        split.append(parsed[i])
-    #parsed = split
-
-    # Parse the file.  Again, order matters here
-    #tiData.prgmdata = parseWhitespace(parsed)
-    #tiData.prgmdata = parseFunction(parsed)
-    #tiData.prgmdata = splitBytes(parsed)
-    #tiData.prgmdata = parseASCII(tiData.prgmdata)
-    #tiData.prgmdata = parseWhitespace(tiData.prgmdata)
 
     
     # Break the name of the program off the filename
