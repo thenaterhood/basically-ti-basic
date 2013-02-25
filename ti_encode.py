@@ -43,7 +43,6 @@ def readFile(filename):
     # Opens the file and reads it one line at a time into an array
     for line in open(filename, "r"):
         fileContents.append(line)
-        #fileContents.append(b'?')
     return fileContents
 
     
@@ -132,7 +131,11 @@ def parseASCII(fileContents):
     # and no escape character set
     ascii_parsed = translate(ascii_symbol_dict, ascii_parsed, False, '')
     
-    return ascii_parsed
+    # Convert spaces
+    whitespace_dict = dictionaries.whitespace(True)
+    ascii_parsed = translate(whitespace_dict, ascii_parsed, False, '')
+    
+    return ascii_parsed + [b'?']
 
 def parseWhitespace(fileContents):
     """
@@ -212,16 +215,12 @@ def parseFunction(fileContents):
     
     parsedFunction = []
     for item in fileContents:
-        if ( not isinstance(item, bytes) ):
-            for key in function_dict:
-                if ( key in item ):
-                    start = item.find(key)
-                    end = item.find(key) + len(key)
-                    parsedFunction = parsedFunction + [item[0:start]] + [function_dict[item[start:end]]] + [item[end:]]
-                    print(parsedFunction)
-                    return parsedFunction
+        item = item.partition('(')
+        item = item[0] + item[1]
+        if ( item in function_dict ):
+            parsedFunction = parsedFunction + [ function_dict[item] ]
                     
-    return fileContents
+    return parsedFunction
     """        
 
     # calls the translate function with the function dictionary,
@@ -279,40 +278,73 @@ def main():
     # Read the file
     fileContents = readFile(filename)
     
+    # Create an array to store the compiled data
+    code = [ b'?' ] * len(fileContents)
+    
+    # Split the lines up over spaces to isolate functions
+    splitLines = []
+    for line in fileContents:
+        splitLines.append( line[1:].split() )
+    
+    parsedLines = []
+    # Parse any code comments and empty newlines
+    i = 0
+    while i < len(splitLines):
+        try:
+            if ( splitLines[i][0][0] == '"' ):
+                code[i] = parseASCII( ' '.join( splitLines[i] ) )
+                parsedLines.append(i)
+        except:
+            parsedLines.append(i)
+            
+        i+=1
+    
+    i = 0
+    while i < len(splitLines):    
+        if ( i not in parsedLines ):
+            code[i] = parseFunction( splitLines[i] ) + [b'?']
+            parsedLines.append(i)
+        i+=1
+    
+    tiData.prgmdata = []
+    for item in code:
+        try:
+            tiData.prgmdata = tiData.prgmdata + item
+        except:
+            tiData.prgmdata = tiData.prgmdata + [item]
+    print(tiData.prgmdata)
+    
+    
     # Parses any code comments
-    parsed = []
-    for line in fileContents:
-        if ( isinstance(line, list) or isinstance(line, str) ):
-            parsed = parsed + parseText(line)
-        else:
-            parsed = parsed + [line]
-    #print(parsed)
+    #parsed = []
+    #for line in fileContents:
+    #    if ( isinstance(line, list) or isinstance(line, str) ):
+    #        parsed = parsed + parseText(line)
+    #    else:
+    #        parsed = parsed + [line]
     
-    fileContents = deepcopy(parsed)
-    if (isinstance(parsed, str)):
-        print("Yes, string")
-    parsed = []
+    #parsed = []
     
-    for line in fileContents:
-        if ( isinstance(line, list) or isinstance(line, str) ):
-            parsed = parsed + [parseFunction(line)]
-        else:
-            parsed = parsed + [line]
+    #for line in fileContents:
+    #    if ( isinstance(line, list) or isinstance(line, str) ):
+    #        parsed = parsed + [parseFunction(line)]
+    #    else:
+    #        parsed = parsed + [line]
                     
     # Splits the remainder into pieces and parses it like before. 
-    split = []
-    for i in range(0,len(parsed)):
-        if (isinstance(parsed[i], str)):
-            split = split + parsed[i].strip(':').split() 
-        else:
-            split.append(parsed[i])
-    parsed = split
+    #split = []
+    #for i in range(0,len(parsed)):
+    #    if (isinstance(parsed[i], str)):
+    #        split = split + parsed[i].strip(':').split() 
+    #    else:
+    #        split.append(parsed[i])
+    #parsed = split
 
     # Parse the file.  Again, order matters here
     #tiData.prgmdata = parseWhitespace(parsed)
     #tiData.prgmdata = parseFunction(parsed)
-    tiData.prgmdata = splitBytes(parsed)
-    tiData.prgmdata = parseASCII(tiData.prgmdata)
+    #tiData.prgmdata = splitBytes(parsed)
+    #tiData.prgmdata = parseASCII(tiData.prgmdata)
     #tiData.prgmdata = parseWhitespace(tiData.prgmdata)
 
     
