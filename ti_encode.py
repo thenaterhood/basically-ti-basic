@@ -43,7 +43,7 @@ def readFile(filename):
     # Opens the file and reads it one line at a time into an array
     for line in open(filename, "r"):
         fileContents.append(line)
-        fileContents.append(b'?')
+        #fileContents.append(b'?')
     return fileContents
 
     
@@ -191,7 +191,7 @@ def parseText(line):
             parsed = [ unParsed[:i] ] + parseWhitespace( parseASCII(unParsed[i:j]) ) + [ unParsed[j:] ]
             return parsed
         
-    return [line]
+    return [line, b'?']
             
 
 def parseFunction(fileContents):
