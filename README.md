@@ -13,6 +13,25 @@ Contents
     tiFile.py       contains structures and functions for reading/writing/validating TI-Basic files
     common.py       contains common code for getting filenames, reading, and writing text files
     FIBO.8Xp        a compiled test program.  Calculates the Fibonacci sequence.
+
+
+tiFile.py
+------------
+This file contains a class for working with TI 8Xp files, and is packaged
+as such for ease of development on my end as well as to make it easier to 
+create other software that might make use of 8Xp files.  Right now, the class
+supports reading, writing, and validating 8Xp files.  Once encoding and
+decoding are fully working, if the code for both can be condensed enough,
+those functions may be supported directly in the class as well.
+
+The class can be called with or without an argument.  Calling the class
+with no argument causes the class to construct itself initializing all
+of its fields to False (boolean).  This is used in the context of Basically, TI-Basic
+to create an empty object, where the fields are filled as the data for
+them is compiled.  Otherwise, the class can be called with the filename
+of a .8Xp file and the class will construct an instance of itself 
+populating its fields with the data pulled from the file as bytes.
+
     
 ti_decode.py
 ------------
