@@ -14,7 +14,7 @@ data_files=[]
 
 
 setup(name='basically_ti_basic',
-    version='0.1.1',
+    version='0.1.2',
     description='Utilities for manipulating TI-Basic program files',
     author='Nate Levesque',
     author_email='public@thenaterhood.com',
