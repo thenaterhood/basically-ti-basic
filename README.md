@@ -2,146 +2,63 @@ Basically, TI-Basic
 ========
 
 Software to make working with TI-Basic files much easier on the PC by decompiling
-and recompiling the .8Xp files from the TI-83/TI-84 calculators.
+and recompiling the .8Xp files from the TI-83/TI-84 calculators. For more
+information about the 8Xp file format, see the site listed in the credits and
+the 8XP_Format.md file, which contains additional reverse-engineered
+information.
 
-Contents
+Installation
 ------------
+basically_ti_basic can be installed like any other typical Python package.
+Once Python (3+) is installed on the target system, simply clone the repository
+and navigate to the cloned repository in the command line. Once there, run
+`python setup.py install`. You should be good to go.
 
-    ti_decode.py    a decompiler for TI-Basic files (TI-Basic -> text)
-    ti_encode.py    a compiler for TI-Basic files (text -> TI-Basic)
-    dictionaries.py the dictionaries required to compile and decompile
-    tiFile.py       contains structures and functions for reading/writing/validating TI-Basic files
-    common.py       contains common code for getting filenames, reading, and writing text files
-    FIBO.8Xp        a compiled test program.  Calculates the Fibonacci sequence.
-
-
-tiFile.py
+Usage
 ------------
-This file contains a class for working with TI 8Xp files, and is packaged
-as such for ease of development on my end as well as to make it easier to 
-create other software that might make use of 8Xp files.  Right now, the class
-supports reading, writing, and validating 8Xp files.  Once encoding and
-decoding are fully working, if the code for both can be condensed enough,
-those functions may be supported directly in the class as well.
+basically_ti_basic provides a command line utility and a few libraries.
 
-The class can be called with or without an argument.  Calling the class
-with no argument causes the class to construct itself initializing all
-of its fields to False (boolean).  This is used in the context of Basically, TI-Basic
-to create an empty object, where the fields are filled as the data for
-them is compiled.  Otherwise, the class can be called with the filename
-of a .8Xp file and the class will construct an instance of itself 
-populating its fields with the data pulled from the file as bytes.
+The command line utility should be available in your shell as the command
+`basically-ti-basic`. The utility allows for compilation and decompilation of
+TI-83+ .8Xp files. It provides the option to write the result to a file or
+print it to the console. Some usage examples:
 
-    
-ti_decode.py
-------------
-ti_decode.py is a non-graphical program that pulls from TI .8Xp files and converts
-the data to text.  It's rough around the edges and isn't quite finished, but 
-it works in a pinch.  It will convert ASCII text and symbols (lowercase letters as well!),
-whitespace, and a collection of TI-Basic functions to plaintext.  At the time of writing
-this script, I did not have a full collection of functions to figure out, but it's easy
-enough to add those.  I'll be finishing that off over the next while.
+Open the file FIBO.8Xp, decompile it, and save the result to FIBO.txt
 
-Note that the script does not parse lists that are called in the code at all.
+`$ basically-ti-basic -d -i FIBO.8Xp -o FIBO.txt`
 
-Anything that isn't parsed will give back garbage, as python converts
-the bytes to strings directly so they show up as b'\x00' (null character there, but
-that's what they look like).  The software supports saving the output to a file so removing
-any garbage with the text editor of your choice is easy.
+Open the file FIBO.txt, compile it, and save the result to FIBO.8Xp
 
-ti_encode.py
-------------
-ti_encode.py is still a work in progress but it compiles files to TI-Basic.  Documentation is coming soon,
-as there are still things that are a little shaky in terms of building the file metadata, although
-that seems to work fairly well for small programs.  Larger programs may be a problem as some
-of the hex values in the metadata change for larger programs and I haven't figured them out yet.
+`$ basically-ti-basic -c -i FIBO.txt -o FIBO.8Xp`
 
-The main problems right now with compiling the files is a little trouble with whitespace, ascii, and
-the metadata.  With that said, I'm able to successfully compile some small programs and get back
-something recognizable.  The biggest problem is the metadata because without that, nothing will
-accept the compiled file at all.  Keep reading for more on that.
+Open the file FIBO.8Xp, decompile it, and print the result to the console
 
-8Xp Files
-------------
-The 8Xp files are fairly easy to decompile since they're basically only byte-compiled and fairly simple.
-The program works with them by running through and matching up bytes to what they represent in plaintext.
-After that, it cuts 72 bytes off the top of the file, which appears to be metadata and doesn't need
-to be decoded to plaintext (it holds no benefit) and cuts 3 bytes off the bottom of the file.  Those
-3 bytes don't appear to hold much importance because the file is still recognized without them.
+`$ basically-ti-basic -d -i FIBO.8Xp`
 
-The metadata is a little bit more interesting and the Internet doesn't hold much information about it.
-The first 9 bytes are the same for every program and declare the type of file.  Easy enough, it's:
+basically_ti_basic can also be imported into other applications. The libraries
+that may interest you the most are:
 
-    **TI83F*[SUB][NEWLINE]
-    
-The next line holds a comment.  The TI calculator uses this to datestamp the (creation?) of the file.  The comment is
-40 characters (bytes) long, preceded by and ending with a NUL character.  Another NUL character follows then a hexadecimal
-value.  The hexadecimal value doesn't seem to be extremely important as changing it arbitrarily in my test
-programs doesn't seem to have any effect on their being decompiled (online software doing the decoding since
-it's much pickier than mine).  The byte after it however is a little more important and changing it does some weird
-things that I don't understand given my knowledge of the files.  It appears to denote something regarding
-the size or length of the code since it stays the same for programs of the same relative size.  Given that, the line
-looks something like:
+* `basically_ti_basic.tokens`: Contains a dictionary of tokens to strings, and two functions for manipulating it (mainly, a flip so that the same dictionary can be used for compilation and decompilation).
 
-    [NUL]40 character comment[NUL][NUL]hex value[NUL or STX looking at my program collection][NEWLINE]
-    
-The next and final line is a little more interesting and much more crucial to the file actually being usable.
-It starts with a NUL character, followed by the size of the code (excluding the size of the metadata and footer).
-If this value is invalid it causes some bigger problems, as the decompiler used to confirm results will stop
-interpreting anything past the number of bytes the file claims to be.  This is followed by a byte that functions
-as a carry bit.  Since the maximum value a single byte can hold is 255, if the size of the program is over 255 bytes
-then the next byte is set.  The next section of the line is the name of the program, starting
-with a [ENQ] character.  The name is limited to 8 bytes, and therein capital letters.  Any unused bytes are filled
-with [NUL] characters.  The two bytes after this are [NUL] characters as well which might suggest that the file
-itself could permit longer names although the 8 characters is all that fits on the calculator screen's place
-for it.  This is followed by the size again and a carry byte, like the second two characters of the line.
-After this is what appears to be the size - 2, and a carry byte for the size-2.  So, put together
-the line ends up looking like this:
+* `basically_ti_basic.compiler.PrgmCompiler`: Provides compilation and decompilation functionality.
 
-    [NUL]program size, carry byte[ENQ]prgmname[NUL][NUL]program size, carry byte, prgm size - 2, carry byte
-    
-Then the compiled code for the program follows
+* `basically_ti_basic.files.TIPrgmFile`: Structure that represents a TI Program file and provides methods for generating the file headers.
 
-Disclaimer
-------------
-Be careful, don't be dumb, back up your stuff.  The software isn't currently aware of when it might
-overwrite a file, so watch what you do with it.  It also doesn't do custom filenames (it will soon enough)
-so watch out.
-
-Installation, or How to Git
-------------
-
-To download and use the repository, you must check out the repository
-from github into the directory of your choice using:
-
-	git clone --recursive https://github.com/thenaterhood/basically-ti-basic.git ~/basically-ti-basic
-	
-This command clones the repository to the basically-ti-basic folder in your user directory.  If
-you happened to put it somewhere other than the ~/basically-ti-basic folder, which is perfectly
-acceptable, remember to adjust the following instructions accordingly.
-
-After cloning the repository, you'll want to run
-	
-	cd ~/basically-ti-basic
-	git submodule update --init --recursive
-	
-The --init flag initizlizes the submodule repositories and the --recursive flag
-makes sure that nested submodules are initialized and updated as well.
-	
-You may want to learn more github commands in order to update specific files.
+**Heads Up! The TI file creation (compilation) functionality is incomplete and
+may produce malformed files. Use it with caution and make sure to back up your
+calculator before loading any compiled files onto it.**
 
 
 LICENSE
 ------------
+basically_ti_basic is licensed under the MIT license. The full license text
+can be found in the LICENSE file.
 
-thenaterhood/basically-ti-basic repository (c) 2012-2013 Nate Levesque (TheNaterhood)
+If you find basically_ti_basic useful, use it regularly, or build something cool
+around it, please consider contributing, providing feedback or simply dropping a
+line to say that basically_ti_basic is useful to you. Feedback from users is
+what keeps open source projects strong.
 
-[![Creative Commons License](http://i.creativecommons.org/l/by-sa/3.0/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/)
-
-TL;DR: You can use, copy and modify this SO LONG AS you credit me and distribute your remixes with the same license.
-
-This work is licensed under the [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/).
-
-You should have received a copy of the license along with this
-work. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/ or send
-a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+Credits
+------------
+Special thanks to [http://merthsoft.com/](http://merthsoft.com/) for their [TI-83+/TI-84+ Link Protocol Guide](http://merthsoft.com/linkguide/ti83+/index.html), which was a big help in writing sections of this software.
