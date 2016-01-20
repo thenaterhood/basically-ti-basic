@@ -14,7 +14,7 @@ data_files=[]
 
 
 setup(name='basically_ti_basic',
-    version='0.1.0',
+    version='0.1.1',
     description='Utilities for manipulating TI-Basic program files',
     author='Nate Levesque',
     author_email='public@thenaterhood.com',
@@ -23,7 +23,8 @@ setup(name='basically_ti_basic',
     tests_require=test_requires,
     entry_points={
         'console_scripts': [
-            'basically-ti-basic = basically_ti_basic.__main__:main'
+            'basically-ti-basic = basically_ti_basic.__main__:main',
+            'tibc = basically_ti_basic.__main__:main'
         ]
     },
     test_suite='nose.collector',
