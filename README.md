@@ -1,5 +1,9 @@
 Basically, TI-Basic
 ========
+[![Code Climate](https://codeclimate.com/github/thenaterhood/basically-ti-basic/badges/gpa.svg)](https://codeclimate.com/github/thenaterhood/basically-ti-basic)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/f1a58493247e491caecdd5d68b70620f)](https://www.codacy.com/app/thenaterhood/basically-ti-basic)
+[![Code Health](https://landscape.io/github/thenaterhood/basically-ti-basic/master/landscape.svg?style=flat)](https://landscape.io/github/basically-ti-basic/heartbeat/master)
+
 
 Software to make working with TI-Basic files much easier on the PC by decompiling
 and recompiling the .8Xp files from the TI-83/TI-84 calculators. For more
