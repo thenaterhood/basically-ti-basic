@@ -11,6 +11,9 @@ information about the 8Xp file format, see the site listed in the credits and
 the 8XP_Format.md file, which contains additional reverse-engineered
 information.
 
+If you're looking for files to compile/decompile, you can find a number of
+TI programs at [github.com/thenaterhood/ti-programs](https://github.com/thenaterhood/ti-programs).
+
 Installation
 ------------
 basically_ti_basic can be installed like any other typical Python package.
