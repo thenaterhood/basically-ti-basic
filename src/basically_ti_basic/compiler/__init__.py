@@ -8,7 +8,7 @@ class PrgmCompiler(object):
     program files
     """
 
-    def compile(raw_text):
+    def compile(self, raw_text=None):
         """
         Compiles to 8Xp format. This logic works, but the TIFile class is
         incomplete so the file may not work properly on the TI calculator.
@@ -18,6 +18,14 @@ class PrgmCompiler(object):
         Returns:
             TIFile
         """
+        # To be compatible with Python 2.7 without changing
+        # the public class API, we do some gross magic. This
+        # has a side effect that we can use this method either
+        # as a static method or not.
+        # FIXME
+        if not isinstance(self, PrgmCompiler):
+            raw_text = self
+
         tifile = TIPrgmFile()
         tifile.prgmdata = []
         tokens = get_inverse_tokens()
@@ -45,7 +53,7 @@ class PrgmCompiler(object):
         return tifile
 
 
-    def decompile(tifile):
+    def decompile(self, tifile=None):
         """
         Decompiles to plaintext.
 
@@ -54,6 +62,15 @@ class PrgmCompiler(object):
         Returns:
             Array[string]
         """
+
+        # To be compatible with Python 2.7 without changing
+        # the public class API, we do some gross magic. This
+        # has a side effect that we can use this method either
+        # as a static method or not.
+        # FIXME
+        if not isinstance(self, PrgmCompiler):
+            tifile = self
+
         prgm_data = tifile.prgmdata
         plaintext = []
         tokens = get_tokens()
