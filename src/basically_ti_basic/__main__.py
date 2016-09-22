@@ -9,7 +9,8 @@ def compile_file(inputfile, outputfile):
         for line in f:
             file_lines.append(line)
 
-    compiled_file = PrgmCompiler.compile(file_lines)
+    compiler = PrgmCompiler()
+    compiled_file = compiler.compile(file_lines)
     if outputfile == "stdout":
         print("".join(compiled_file.prgmdata))
     else:
@@ -18,7 +19,8 @@ def compile_file(inputfile, outputfile):
 def decompile_file(inputfile, outputfile):
     tifile = TIPrgmFile(inputfile)
 
-    decompiled = PrgmCompiler.decompile(tifile)
+    compiler = PrgmCompiler()
+    decompiled = compiler.decompile(tifile)
     if outputfile == 'stdout':
         print("\n".join(decompiled))
     else:
